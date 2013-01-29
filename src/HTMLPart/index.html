@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+    <head>
+        <title>Toponyms InfoVis Project</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false"></script>
+        <script type="text/javascript" src="src/JsPart/main.js"></script>
+        <script type="text/javascript">
+            $( document ).ready( function() {
+                initialize();
+            });
+        </script>
+        
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+        <style type="text/css">
+            body {margin: 0px;}
+            table {margin: 0px;}
+            tr {margin: 0px;}
+            td {margin: 0px;}
+            
+            #feedback { font-size: 1.4em; }
+            #group_list .ui-selecting { background: #FECA40; }
+            #group_list .ui-selected { background: #F39814; color: white; }
+            #group_list { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+            #group_list li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+            
+        </style>
+    </head>
+    <body>
+        <table border="0" style="width:100%; height:100%;">
+            <tr><td style="width:20%;"><div style="width:100%; height:100%; margin:0px 0px; padding:0px;">
+                        <ol id="group_list" style="width:100%; height:100%; margin:0px 0px; padding:0px;">
+                        </ol>
+                    </div></td>
+                <td style="width:80%;"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
+        </table>
+    </body>
+</html>
