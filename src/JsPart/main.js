@@ -32,4 +32,8 @@ function initialize()
         $groupsList.append("<li class=\"ui-widget-content\">" + groups[gIdx] + "</li>");
     }
     
+    $.getJSON("jsontest", function(json) {
+        alert("JSON Data: " + json);
+    });
+    
 }

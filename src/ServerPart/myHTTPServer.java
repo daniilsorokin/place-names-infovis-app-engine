@@ -1,5 +1,6 @@
 package ServerPart;
 
+import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -85,6 +86,9 @@ public class myHTTPServer extends Thread{
                     sendResponse(200, responseBuffer.toString());
                 } else if (query.equals("index")){
                     sendResponse(200, new File("src/HTMLPart/index.html"));
+                } else if (query.equals("jsontest")){
+                    String[] string = {"abc", "def", "ghi"};
+                    sendResponse(200, string);
                 } else if ((toLoad = new File(query)).isFile()){
                     sendResponse(200, toLoad);
                 } else if (query.equals("test")){
@@ -102,8 +106,7 @@ public class myHTTPServer extends Thread{
     }
     
     /**
-     * Send a response of a basic type.
-     * 
+     * Sends a response of a basic type.
      * 
      * @param statusCode
      * @param responseString
@@ -136,8 +139,7 @@ public class myHTTPServer extends Thread{
     }
     
     /**
-     * Send a response of a basic type.
-     * 
+     * Sends a file.
      * 
      * @param statusCode
      * @param responseString
@@ -183,5 +185,38 @@ public class myHTTPServer extends Thread{
         outToClient.close();
     }
     
+    /**
+     * Sends an object in json format.
+     * 
+     * @param statusCode
+     * @param responseObj
+     * @throws Exception 
+     */
+    public void sendResponse (int statusCode, Object responseObj) throws Exception {
+        
+        String statusLine = null;
+        String serverdetails = "Server: Java HTTPServer";
+        String contentLengthLine = null;
+        String contentTypeLine = "Content-Type: application/json" + "\r\n";
+        
+        if (statusCode == 200)
+            statusLine = "HTTP/1.1 200 OK" + "\r\n";
+        else
+            statusLine = "HTTP/1.1 404 Not Found" + "\r\n";
+            
+        Gson gson = new Gson();
+        String json = gson.toJson(responseObj);
+        contentLengthLine = "Content-Length: " + json.length() + "\r\n";
+        
+        outToClient.writeBytes(statusLine);
+        outToClient.writeBytes(serverdetails);
+        outToClient.writeBytes(contentTypeLine);
+        outToClient.writeBytes(contentLengthLine);
+        outToClient.writeBytes("Connection: close\r\n");
+        outToClient.writeBytes("\r\n");
+        outToClient.writeBytes(json);
+        
+        outToClient.close();
+    }
     
 }
