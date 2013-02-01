@@ -56,12 +56,15 @@ function fillTheMainList (data){
 }
 
 function placeNewMarker(id, coordinates){
-    var latlng = new google.maps.LatLng(coordinates.first, coordinates.second);
-    var marker = new google.maps.Marker({
-        position: latlng,
-        map: myMap,
-        title:"Hello World!"
-    });
-    markers[id] = marker;
+    if (markers[id] == null){
+        var latlng = new google.maps.LatLng(coordinates.first, coordinates.second);
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: myMap,
+            title:"Hello World!"
+        });
+        
+        markers[id] = marker;
+    }
 }
 					

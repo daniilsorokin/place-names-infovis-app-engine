@@ -41,14 +41,14 @@ public class Dataset {
         try {
             while ((line = src.readLine()) != null){
                 String[] parts = line.split("\t");
-                if (parts.length != 5) {
+                if (parts.length < 5) {
                     System.err.println("Wrong data type in the current line.");
                     continue;
                 }
                 if (parts[2].isEmpty() || parts[3].isEmpty()){
-                    toponyms.add(new Toponym(parts[0], parts[1], parts[4]));
+                    toponyms.add(new Toponym(parts[1], parts[4]));
                 } else {
-                    toponyms.add(new Toponym(parts[0].trim(), parts[1].trim(), 
+                    toponyms.add(new Toponym(parts[1].trim(), 
                         Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[4].trim()));
                 }
             }

@@ -20,9 +20,9 @@ public class Toponym {
      * 
      * @param name 
      */
-    public Toponym (String name){
-        this.name = name;
-        this.latName = "";
+    public Toponym (String latName){
+        this.name = "";
+        this.latName = latName;
         this.lat = null;
         this.lng = null;
         this.group = null; 
@@ -37,8 +37,8 @@ public class Toponym {
      * @param lng
      * @param group 
      */
-    public Toponym (String name, String latName, double lat, double lng, String group){
-        this.name = name;
+    public Toponym (String latName, double lat, double lng, String group){
+        this.name = "";
         this.latName = latName;
         this.lat = lat;
         this.lng = lng;
@@ -52,8 +52,8 @@ public class Toponym {
      * @param latName
      * @param group 
      */
-    public Toponym (String name, String latName, String group){
-        this.name = name;
+    public Toponym (String latName, String group){
+        this.name = "";
         this.latName = latName;
         this.lat = null;
         this.lng = null;
@@ -68,8 +68,8 @@ public class Toponym {
      * @param lat
      * @param lng 
      */
-    public Toponym (String name, String latName, double lat, double lng){
-        this.name = name;
+    public Toponym (String latName, double lat, double lng){
+        this.name = "";
         this.latName = latName;
         this.lat = lat;
         this.lng = lng;
