@@ -103,14 +103,22 @@ public class myHTTPServer extends Thread{
                 } else if (query.equals("index")){
                     sendResponse(200, new File("src/HTMLPart/index.html"));
                 } else if (query.equals("getdata")){
-                    String[] test = {"abc","asd","rg"};
+                    String[] returnData = null;
                     if (workingDataset != null) {
-                        test = workingDataset.getNamesOfToponyms();
+                        returnData = workingDataset.getNamesOfToponyms();
                     } else {
                         System.err.println("Dataset is empty");
                     }
-                    System.out.println("Test length:" + test.length);
-                    sendResponse(200, test);
+                    sendResponse(200, returnData);
+                } else if (query.split("\\?", 2)[0].equals("getCoordinates")){
+                    int index = Integer.parseInt(query.split("\\?", 2)[1].trim().replace("id=", ""));
+                    Tuple<Double, Double> returnData = null;
+                    if (workingDataset != null) {
+                        returnData = workingDataset.getCoordOfToponym(index);
+                    } else {
+                        System.err.println("Dataset is empty");
+                    }
+                    sendResponse(200, returnData);
                 } else if ((toLoad = new File(query)).isFile()){
                     sendResponse(200, toLoad);
                 } else if (query.equals("test")){

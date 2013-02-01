@@ -1,6 +1,9 @@
 /** Main map. */
 var myMap; 
 
+var $groupsList;
+
+var markers = {};
 
 var DataSources = [{name:"Ingria area", fileName: "toponyms_Ingria.txt", startPoint: new google.maps.LatLng(59.4, 29.13333), startZoom: 8}]
 
@@ -23,17 +26,42 @@ function initialize()
     myMap.setCenter(DataSources[0].startPoint);
     myMap.setZoom(DataSources[0].startZoom);
     
+    $groupsList = $("#group_list");
     $( "#group_list" ).selectable();
+    $( "#group_list" ).on( "selectableselected", function( event, ui ) {
+        $.getJSON("getCoordinates", { id: ui.selected.id}, function(coordinates) {
+            placeNewMarker(ui.selected.id, coordinates);
+        });
+    } );
+    $( "#group_list" ).on( "selectableunselected", function( event, ui ) {
+        markers[ui.unselected.id].setMap(null);
+        markers[ui.unselected.id] = null;
+    } );
+
     
-    var groups = ["test1", "test2", "test3"];
-    var $groupsList = $("#group_list");
-    for (gIdx in groups)
-    {
-        $groupsList.append("<li class=\"ui-widget-content\">" + groups[gIdx] + "</li>");
-    }
-    
-    $.getJSON("jsontest", function(json) {
-        alert("JSON Data: " + json);
+    $.getJSON("getdata", function(json) {
+        console.log("Dataset size:" + json.length);
+        fillTheMainList(json);
+    }).fail(function(jqXHR, textStatus, error) {
+        console.log(textStatus);
+        console.log(error);
     });
-    
 }
+
+function fillTheMainList (data){
+    for (idx in data)
+    {
+        $groupsList.append("<li id =\"" + idx + "\" class=\"ui-widget-content\">" + data[idx] + "</li>");
+    }
+}
+
+function placeNewMarker(id, coordinates){
+    var latlng = new google.maps.LatLng(coordinates.first, coordinates.second);
+    var marker = new google.maps.Marker({
+        position: latlng,
+        map: myMap,
+        title:"Hello World!"
+    });
+    markers[id] = marker;
+}
+					

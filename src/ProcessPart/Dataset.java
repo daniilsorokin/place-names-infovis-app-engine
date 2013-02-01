@@ -69,4 +69,14 @@ public class Dataset {
         }
         return returnList;
     }
+    
+    /**
+     * Returns coordinates of a particular toponym.
+     * 
+     * @param index toponym's index.
+     * @return tuple with coordinates
+     */
+    public Tuple<Double,Double> getCoordOfToponym (int index){
+        return new Tuple<Double, Double>(toponyms.get(index).getLatitude(), toponyms.get(index).getLongitude());
+    }
 }
