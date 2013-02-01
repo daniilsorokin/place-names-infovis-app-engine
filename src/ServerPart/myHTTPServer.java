@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import ProcessPart.*;
 
 /**
  * Template from http://www.prasannatech.net/2008/10/simple-http-server-java.html
@@ -26,14 +27,17 @@ public class myHTTPServer extends Thread{
     private BufferedReader inFromClient = null;
     private DataOutputStream outToClient = null;
     
+    private Dataset workingDataset = null;
+    
     public static void main (String args[]) throws Exception {
         
         ServerSocket Server = new ServerSocket (5000, 10, InetAddress.getLocalHost());
         System.out.println ("TCPServer Waiting for client on port 5000, address:" +  Server.getInetAddress());
+        Dataset currentDataSet = new Dataset("data/toponyms_Ingria.txt");
         
         while(true) {
             Socket connected = Server.accept();
-            (new myHTTPServer(connected)).start();
+            (new myHTTPServer(connected, currentDataSet)).start();
         }
     }   
     
@@ -44,6 +48,17 @@ public class myHTTPServer extends Thread{
      */
     public myHTTPServer(Socket client) {
         connectedClient = client;
+    }
+    
+    /**
+     * Main constructor with dataset
+     * 
+     * @param client client's connection.
+     * @param dataset dataset to work with.
+     */
+    public myHTTPServer(Socket client, Dataset dataset) {
+        connectedClient = client;
+        workingDataset = dataset;
     }
     
     /**
@@ -72,7 +87,8 @@ public class myHTTPServer extends Thread{
             while (inFromClient.ready())
             {
                 // Read the HTTP complete HTTP Query
-                responseBuffer.append(requestString + "<BR>");
+                responseBuffer.append(requestString);
+                responseBuffer.append("<BR>");
                 System.out.println(requestString);
                 requestString = inFromClient.readLine();
             }
@@ -86,9 +102,15 @@ public class myHTTPServer extends Thread{
                     sendResponse(200, responseBuffer.toString());
                 } else if (query.equals("index")){
                     sendResponse(200, new File("src/HTMLPart/index.html"));
-                } else if (query.equals("jsontest")){
-                    String[] string = {"abc", "def", "ghi"};
-                    sendResponse(200, string);
+                } else if (query.equals("getdata")){
+                    String[] test = {"abc","asd","rg"};
+                    if (workingDataset != null) {
+                        test = workingDataset.getNamesOfToponyms();
+                    } else {
+                        System.err.println("Dataset is empty");
+                    }
+                    System.out.println("Test length:" + test.length);
+                    sendResponse(200, test);
                 } else if ((toLoad = new File(query)).isFile()){
                     sendResponse(200, toLoad);
                 } else if (query.equals("test")){
@@ -100,8 +122,8 @@ public class myHTTPServer extends Thread{
             }
             else sendResponse(404, "<b>The Requested resource not found ...." +
                     "Usage: http://127.0.0.1:5000 or http://127.0.0.1:5000/</b>");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e){
+            System.err.println(e.toString());
         }
     }
     
@@ -112,11 +134,11 @@ public class myHTTPServer extends Thread{
      * @param responseString
      * @throws Exception 
      */
-    public void sendResponse (int statusCode, String responseString) throws Exception {
+    public void sendResponse (int statusCode, String responseString) throws IOException  {
         
-        String statusLine = null;
+        String statusLine;
         String serverdetails = "Server: Java HTTPServer";
-        String contentLengthLine = null;
+        String contentLengthLine;
         String contentTypeLine = "Content-Type: text/html" + "\r\n";
         
         if (statusCode == 200)
@@ -145,21 +167,20 @@ public class myHTTPServer extends Thread{
      * @param responseString
      * @throws Exception 
      */
-    public void sendResponse (int statusCode, File responseContent) throws Exception {
+    public void sendResponse (int statusCode, File responseContent) throws IOException {
         
-        String statusLine = null;
+        String statusLine;
         String serverdetails = "Server: Java HTTPServer";
-        String contentLengthLine = null;
+        String contentLengthLine;
         String contentTypeLine = "Content-Type: \r\n";
          
-        FileInputStream fin = null;
+        FileInputStream fin = new FileInputStream(responseContent);
         
         if (statusCode == 200)
             statusLine = "HTTP/1.1 200 OK" + "\r\n";
         else
             statusLine = "HTTP/1.1 404 Not Found" + "\r\n";
 
-        fin = new FileInputStream(responseContent);
         contentLengthLine = "Content-Length: " + Integer.toString(fin.available()) + "\r\n";
         if (responseContent.getName().endsWith(".htm") || responseContent.getName().endsWith(".html"))
             contentTypeLine = "Content-Type: text/html" + "\r\n";
@@ -192,12 +213,12 @@ public class myHTTPServer extends Thread{
      * @param responseObj
      * @throws Exception 
      */
-    public void sendResponse (int statusCode, Object responseObj) throws Exception {
+    public void sendResponse (int statusCode, Object responseObj) throws IOException {
         
-        String statusLine = null;
+        String statusLine;
         String serverdetails = "Server: Java HTTPServer";
-        String contentLengthLine = null;
-        String contentTypeLine = "Content-Type: application/json" + "\r\n";
+        String contentLengthLine;
+        String contentTypeLine = "Content-Type: application/json; charset=utf-8" + "\r\n";
         
         if (statusCode == 200)
             statusLine = "HTTP/1.1 200 OK" + "\r\n";
@@ -207,7 +228,7 @@ public class myHTTPServer extends Thread{
         Gson gson = new Gson();
         String json = gson.toJson(responseObj);
         contentLengthLine = "Content-Length: " + json.length() + "\r\n";
-        
+
         outToClient.writeBytes(statusLine);
         outToClient.writeBytes(serverdetails);
         outToClient.writeBytes(contentTypeLine);
@@ -218,5 +239,4 @@ public class myHTTPServer extends Thread{
         
         outToClient.close();
     }
-    
 }
