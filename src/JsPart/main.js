@@ -41,14 +41,14 @@ function initialize()
     
     $.getJSON("getdata", function(json) {
         console.log("Dataset size:" + json.length);
-        fillTheMainList(json);
+        fillTheList(json);
     }).fail(function(jqXHR, textStatus, error) {
         console.log(textStatus);
         console.log(error);
     });
 }
 
-function fillTheMainList (data){
+function fillTheList (data){
     for (idx in data)
     {
         $groupsList.append("<li id =\"" + idx + "\" class=\"ui-widget-content\">" + data[idx] + "</li>");
@@ -63,8 +63,7 @@ function placeNewMarker(id, coordinates){
             map: myMap,
             title:"Hello World!"
         });
-        
+        //To Do: Maybe another way to store markers. I am not sure about Javascript handles the memory.
         markers[id] = marker;
     }
 }
-					

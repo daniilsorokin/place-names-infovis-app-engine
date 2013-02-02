@@ -1,10 +1,11 @@
 package ProcessPart;
 
 import ServerPart.myHTTPServer;
+import baseclasses.Tuple;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
  */
 public class Dataset {
     private ArrayList<Toponym> toponyms;
+    private HashMap<String, List<Toponym>> groups;
     
     public static final String ENCODING = myHTTPServer.ENCODING;
     
@@ -35,7 +37,7 @@ public class Dataset {
      */
     public Dataset (File file) throws FileNotFoundException, UnsupportedEncodingException {
         toponyms = new ArrayList<Toponym>();
-        
+        groups = new HashMap<String, List<Toponym>>();
         BufferedReader src = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING));
         String line;
         try {
@@ -45,13 +47,24 @@ public class Dataset {
                     System.err.println("Wrong data type in the current line.");
                     continue;
                 }
+                Toponym newElement;
                 if (parts[2].isEmpty() || parts[3].isEmpty()){
-                    toponyms.add(new Toponym(parts[1], parts[4]));
+                    newElement = new Toponym(parts[1], parts[4]);
+                    
                 } else {
-                    toponyms.add(new Toponym(parts[1].trim(), 
-                        Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[4].trim()));
+                    newElement = new Toponym(parts[1].trim(), 
+                        Double.parseDouble(parts[2]), Double.parseDouble(parts[3]), parts[4].trim());
+                }
+                toponyms.add(newElement);
+                if (newElement.getGroup() != null){
+                    if (!groups.containsKey(newElement.getGroup())){
+                        groups.put(newElement.getGroup(), new ArrayList<Toponym>());
+                    }
+                    groups.get(newElement.getGroup()).add(newElement);
                 }
             }
+            System.out.println("Number of toponyms: " + toponyms.size() + "\n" +
+                    "Number of groups: " + groups.size());
         } catch (IOException ex) {
             System.err.println(ex.toString());
         }
@@ -71,12 +84,21 @@ public class Dataset {
     }
     
     /**
+     * Returns a list of names of all toponyms contained in the dataset.
+     * 
+     * @return 
+     */
+    public String[] getNamesOfGroups (){
+        return groups.keySet().toArray(new String[groups.size()]);
+    }
+    
+    /**
      * Returns coordinates of a particular toponym.
      * 
      * @param index toponym's index.
-     * @return tuple with coordinates
+     * @return Tuple with coordinates
      */
-    public Tuple<Double,Double> getCoordOfToponym (int index){
-        return new Tuple<Double, Double>(toponyms.get(index).getLatitude(), toponyms.get(index).getLongitude());
+    public Toponym getToponym (int index){
+        return toponyms.get(index);
     }
 }

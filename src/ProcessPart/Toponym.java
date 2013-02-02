@@ -4,6 +4,8 @@
  */
 package ProcessPart;
 
+import baseclasses.Tuple;
+
 /**
  *
  * @author Daniil Sorokin <daniil.sorokin@student.uni-tuebingen.de>
@@ -110,6 +112,15 @@ public class Toponym {
      */
     public Double getLongitude(){
         return lng;
+    }
+    
+    /**
+     * Returns coordinates of the toponym.
+     * 
+     * @return Tuple with coordinates
+     */
+    public Tuple<Double,Double> getCoordinates (){
+        return new Tuple<Double, Double>(lat, lng);
     }
     
     /**

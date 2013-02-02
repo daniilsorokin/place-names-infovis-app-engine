@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import ProcessPart.*;
+import baseclasses.Tuple;
 
 /**
  * Template from http://www.prasannatech.net/2008/10/simple-http-server-java.html
@@ -33,10 +34,14 @@ public class myHTTPServer extends Thread{
         
         ServerSocket Server = new ServerSocket (5000, 10, InetAddress.getLocalHost());
         System.out.println ("TCPServer Waiting for client on port 5000, address:" +  Server.getInetAddress());
+        
+        /* Create a dataset. For now there is only one dataset, so it is loaded once
+         * for all connected useres. It is of course should be changed later. */
         Dataset currentDataSet = new Dataset("data/toponyms_Ingria.txt");
         
         while(true) {
             Socket connected = Server.accept();
+            //Create a new thread and pass the connection and the dataset.
             (new myHTTPServer(connected, currentDataSet)).start();
         }
     }   
@@ -93,6 +98,7 @@ public class myHTTPServer extends Thread{
                 requestString = inFromClient.readLine();
             }
             
+            // ToDo: Here is the part I don't like the most now
             if (httpMethod.equals("GET")) {
                 String query = httpQueryString.replaceFirst("/", "");
                 query = URLDecoder.decode(query, ENCODING);
@@ -114,7 +120,7 @@ public class myHTTPServer extends Thread{
                     int index = Integer.parseInt(query.split("\\?", 2)[1].trim().replace("id=", ""));
                     Tuple<Double, Double> returnData = null;
                     if (workingDataset != null) {
-                        returnData = workingDataset.getCoordOfToponym(index);
+                        returnData = workingDataset.getToponym(index).getCoordinates();
                     } else {
                         System.err.println("Dataset is empty");
                     }
@@ -234,6 +240,7 @@ public class myHTTPServer extends Thread{
             statusLine = "HTTP/1.1 404 Not Found" + "\r\n";
             
         Gson gson = new Gson();
+        //To Do: Has porblems with russian characters, needs to be solved.
         String json = gson.toJson(responseObj);
         contentLengthLine = "Content-Length: " + json.length() + "\r\n";
 
