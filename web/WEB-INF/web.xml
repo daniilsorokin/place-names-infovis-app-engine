@@ -8,8 +8,16 @@
             <param-value>WEB-INF/data/toponyms_Ingria.txt</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>dbServlet</servlet-name>
+        <servlet-class>ServerPart.DBServlet</servlet-class>
+        <init-param>
+            <param-name>datasetFile</param-name>
+            <param-value>../webapps/VisWebProject/WEB-INF/data/toponymsDatabase</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
-        <servlet-name>dataServlet</servlet-name>
+        <servlet-name>dbServlet</servlet-name>
         <url-pattern>/getData</url-pattern>
     </servlet-mapping>
     <session-config>

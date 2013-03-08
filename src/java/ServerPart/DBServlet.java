@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
@@ -17,18 +19,20 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
-public class DataServlet extends HttpServlet {
+public class DBServlet extends HttpServlet {
     
-    private Dataset workingDataset;
-
+    private Connection connection;
+    
     public void init(ServletConfig servletConfig) throws ServletException{
         String datasetFile = servletConfig.getInitParameter("datasetFile");
         try {
-            workingDataset = new Dataset(servletConfig.getServletContext().getResourceAsStream(datasetFile));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DataServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(DataServlet.class.getName()).log(Level.SEVERE, null, ex);
+            // Initialize class
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite::resource:" + datasetFile);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -50,16 +54,23 @@ public class DataServlet extends HttpServlet {
         if (what == null){
             return;
         }
-        if (what.equals("list")) {
-            if (workingDataset != null) {
-                returnData = workingDataset.getNamesOfToponyms();
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+            if (what.equals("list")) {
+                ResultSet rs = statement.executeQuery("select * from kingiseppD");
+                ArrayList<String> rarray = new ArrayList<String>();
+                while(rs.next())
+                {
+                    rarray.add(rs.getString("name"));
+                }
+                returnData = rarray;
             }
-        } else if (what.equals("coordinates")){
-            int index = Integer.parseInt(request.getParameter("id"));
-            if (workingDataset != null) {
-                returnData = workingDataset.getToponym(index).getCoordinates();
-            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         Gson gson = new Gson();
         String json = gson.toJson(returnData);
         PrintWriter out = response.getWriter();

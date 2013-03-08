@@ -40,19 +40,6 @@ function initialize()
     } );
 
     
-//    $.ajax({
-//        dataType: "json",
-//        url: "getdata",
-//        success: function(json) {
-//            console.log("Dataset size:" + json.length);
-//            fillTheList(json);
-//        }
-//    }).fail(function(jqXHR, textStatus, error) {
-//        console.log(textStatus);
-//        console.log(error);
-//        console.log(jqXHR);
-//    });
-    
     $.getJSON("getData", {what: "list"} ,function(json) {
         console.log("Dataset size:" + json.length);
         fillTheList(json);
