@@ -1,4 +1,4 @@
-Aleksandrovskaya Gorka|59.42|28.52|ка|Александровская Горка
+insert into kingisepp_district values ('Aleksandrovskaya Gorka', 59.42, 28.52, 'ка', 'Александровская Горка');
 Alekseyevka|59.43|28.76|евка|Алексеевка
 Arbolova|59.63|28.93|ово|Арболово
 Babino|59.58|28.57|ино|Бабино
