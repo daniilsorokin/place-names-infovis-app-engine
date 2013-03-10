@@ -5,15 +5,14 @@ var $toponymsList;
 
 var markers = {};
 
-var DataSources = [{name:"Ingria area", fileName: "toponyms_Ingria.txt", startPoint: new google.maps.LatLng(59.4, 29.13333), startZoom: 8}]
-
+var DataSources = [{name:"Ingria area", fileName: "toponyms_Ingria.txt", startPoint: new google.maps.LatLng(59.4, 29.13333), startZoom: 8}];
 
 /**
  * Main function which should be called after the loading of the page.
  */
 function initialize()
 {	
-    var myOptions = {
+    var myOptions = { 
         zoom:4, 
         center: new google.maps.LatLng(59.4, 29.13333),
         streetViewControl: false,
@@ -21,6 +20,7 @@ function initialize()
         overviewMapControl: true,					
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
+    $.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
     
     myMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     myMap.setCenter(DataSources[0].startPoint);
@@ -31,23 +31,69 @@ function initialize()
     $groupsList.hide();
     $(".list").selectable();
     
-    $toponymsList.on( "selectableselected", function( event, ui ) {
-        $.getJSON("getCoordinates", {id: ui.selected.id}, function(coordinates) {
-            placeNewMarker(ui.selected.id, coordinates);
+    $toponymsList.on( "selectablestop", function( event, ui ) {
+//        $(".ui-selected", $groupsList).each(function() {
+//             $(this).removeClass("ui-selected");
+//        });  
+        var ids = new Array();
+        $(".ui-selected" , this).each(function() {
+             ids.push($(this).attr('id'));
+        });  
+        $.getJSON("getToponyms", {id: ids}, function(toponymsList) {
+            for(var toponymIdx in toponymsList){
+                var toponym = toponymsList[toponymIdx];
+                placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude});
+            }
         });
     } );
     $toponymsList.on( "selectableunselected", function( event, ui ) {
         if (markers[ui.unselected.id] != null) markers[ui.unselected.id].setMap(null);
         markers[ui.unselected.id] = null;
     } );
+    
+    $groupsList.on( "selectablestop", function( event, ui ) {
+        //$(".ui-selected", $toponymsList).removeClass("ui-selected");
+//        console.log($(".ui-selected", $toponymsList));
+        $(".ui-selected" , this).each(function() {
+            $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
+                data: {group_name: $(this).attr("id")},
+                success: function(toponymsList) {
+                    for(var toponymIdx in toponymsList){
+                        var toponym = toponymsList[toponymIdx];
+                        placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude});
+                        $("#"+toponym.id, $toponymsList).addClass("ui-selected");
+                    }
+                }
+            });
+        });        
+    });
+    $groupsList.on( "selectableunselected", function( event, ui ) {
+        $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
+                data: {group_name: ui.unselected.id},
+                success: function(toponymsList) {
+                    for(var toponymIdx in toponymsList){
+                        var toponym = toponymsList[toponymIdx];
+                        markers[toponym.id].setMap(null);
+                        markers[toponym.id] = null;
+                        $("#"+toponym.id, $toponymsList).removeClass("ui-selected");
+                    }
+                }
+            });
+    });
    
-    $.getJSON("get-toponyms-names", {} ,function(json) {
-        $toponymsList.fillWith(json);
+    $.getJSON("get-toponyms-names", {} ,function(namesList) {
+        for (nameIdx in namesList) {
+            var nameObj = namesList[nameIdx];
+            $toponymsList.append("<li id =\"" + nameObj.first + "\" class=\"ui-widget-content\">" + nameObj.second + "</li>");
+        }
         $("#list-toponyms").button("enable");
     });
     
-    $.getJSON("get-groups-names", {} ,function(json) {
-        $groupsList.fillWith(json);
+    $.getJSON("get-groups-names", {} ,function(groupsList) {
+        for (nameIdx in groupsList) {
+            var groupName = groupsList[nameIdx];
+            $groupsList.append("<li id =\"" + groupName + "\" class=\"ui-widget-content\">" + groupName + "</li>");
+        }
         $("#list-groups").button("enable");
     });
 
@@ -61,12 +107,11 @@ function initialize()
         $toponymsList.hide('slide', { direction: "left" });
         $groupsList.show('slide',{ direction: "right" });
     });
-    
 }
 
 function placeNewMarker(id, coordinates){
     if (markers[id] == null){
-        var latlng = new google.maps.LatLng(coordinates.first, coordinates.second);
+        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
         var marker = new google.maps.Marker({
             position: latlng,
             map: myMap,

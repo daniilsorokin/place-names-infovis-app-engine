@@ -9,6 +9,9 @@ import baseclasses.Tuple;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -23,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Daniil Sorokin <daniil.sorokin@student.uni-tuebingen.de>
  */
-public class GetToponymServlet extends HttpServlet {
+public class GetToponymsServlet extends HttpServlet {
     private EntityManager em;
 
     /**
@@ -55,12 +58,29 @@ public class GetToponymServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        int index = Integer.parseInt(request.getParameter("id"));
-        KingiseppDistrict toponym = em.find(KingiseppDistrict.class, index);
+        response.setContentType("application/json;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        Object returnData = null;
         
-        Gson gson = new Gson();;        
-        String json = gson.toJson(toponym);
+        if (request.getParameter("id") != null){
+            int index = Integer.parseInt(request.getParameter("id"));
+            KingiseppDistrict toponym = em.find(KingiseppDistrict.class, index);
+            returnData = toponym;
+        } else if (request.getParameter("id[]") != null){
+            String[] indices = request.getParameterValues("id[]");
+            List<KingiseppDistrict> toponyms = em.createNamedQuery("KingiseppDistrict.findAllByIds")
+                    .setParameter("ids", Arrays.asList(indices))
+                    .getResultList();
+            returnData = toponyms;
+        } else if (request.getParameter("group_name") != null){
+            List<KingiseppDistrict> toponyms = em.createNamedQuery("KingiseppDistrict.findByGroupName")
+                    .setParameter("groupName", request.getParameter("group_name"))
+                    .getResultList();
+            returnData = toponyms;
+        }
+        
+        Gson gson = new Gson();  
+        String json = gson.toJson(returnData);
         PrintWriter out = response.getWriter();
         try {
             out.write(json);

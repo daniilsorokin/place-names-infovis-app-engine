@@ -53,9 +53,9 @@ public class GetToponymsNamesServlet extends HttpServlet {
 
         List<KingiseppDistrict> kingDistr = em.createNamedQuery("KingiseppDistrict.findAll").getResultList();
 
-        ArrayList<String> rarray = new ArrayList<String>();
+        ArrayList<Tuple<Integer, String>> rarray = new ArrayList<Tuple<Integer, String>>();
         for (KingiseppDistrict k : kingDistr) {
-            rarray.add(k.getName());
+            rarray.add(new Tuple<Integer, String>(k.getId(), k.getName()));
         }
 
         Gson gson = new Gson();

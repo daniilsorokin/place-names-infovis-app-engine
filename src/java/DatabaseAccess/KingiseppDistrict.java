@@ -25,7 +25,10 @@ import javax.persistence.Table;
     @NamedQuery(name = "KingiseppDistrict.findByGroupName", query = "SELECT k FROM KingiseppDistrict k WHERE k.groupName = :groupName"),
     @NamedQuery(name = "KingiseppDistrict.findByOtherNames", query = "SELECT k FROM KingiseppDistrict k WHERE k.otherNames = :otherNames"),
     @NamedQuery(name = "KingiseppDistrict.findById", query = "SELECT k FROM KingiseppDistrict k WHERE k.id = :id"),
-    @NamedQuery(name = "KingiseppDistrict.findAllGroups", query = "SELECT k.groupName FROM KingiseppDistrict k GROUP BY k.groupName")})
+    @NamedQuery(name = "KingiseppDistrict.findAllByIds", query = "SELECT k FROM KingiseppDistrict k WHERE k.id IN :ids"),
+    @NamedQuery(name = "KingiseppDistrict.findAllGroups", query = "SELECT k.groupName FROM KingiseppDistrict k GROUP BY k.groupName"),
+    @NamedQuery(name = "KingiseppDistrict.findLatLngByIds", query = "SELECT k.latitude, k.longitude FROM KingiseppDistrict k WHERE k.id IN :ids"),
+    @NamedQuery(name = "KingiseppDistrict.findLatLngByGroupName", query = "SELECT k.latitude, k.longitude FROM KingiseppDistrict k WHERE k.groupName = :groupName")})
 public class KingiseppDistrict implements Serializable {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

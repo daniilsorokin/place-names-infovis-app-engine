@@ -5,21 +5,25 @@ import baseclasses.Tuple;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.Double;
 
 /**
  *
  * @author Daniil Sorokin <daniil.sorokin@student.uni-tuebingen.de>
  */
-public class GetToponymCoordinatesServlet extends HttpServlet {
+public class GetToponymsCoordinatesServlet extends HttpServlet {
     private EntityManager em;
 
     /**
@@ -54,18 +58,19 @@ public class GetToponymCoordinatesServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         Object returnData = null;
         
-        if (request.getParameter("id") != null){
-            String[] indices = request.getParameterValues(null);
-            int index = Integer.parseInt(request.getParameter("id"));
-            KingiseppDistrict toponym = em.find(KingiseppDistrict.class, index);
-            if (toponym != null) {
-                returnData = new Tuple<Double, Double>(toponym.getLatitude(), toponym.getLongitude());
-            } else {
-                return;
-            }
+        if (request.getParameter("id[]") != null){
+            String[] indices = request.getParameterValues("id[]");
+            List coordinates = em.createNamedQuery("KingiseppDistrict.findLatLngByIds")
+                    .setParameter("ids", Arrays.asList(indices))
+                    .getResultList();
+            returnData = coordinates;
         } else if (request.getParameter("group_name") != null){
-            
+            List coordinates = em.createNamedQuery("KingiseppDistrict.findLatLngByGroupName")
+                    .setParameter("groupName", request.getParameter("group_name"))
+                    .getResultList();
+            returnData = coordinates;
         }
+        
         Gson gson = new Gson();
         String json = gson.toJson(returnData);
         PrintWriter out = response.getWriter();
