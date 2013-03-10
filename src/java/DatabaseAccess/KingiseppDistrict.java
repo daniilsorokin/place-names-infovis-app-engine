@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package DatabaseAccess;
 
 import java.io.Serializable;
@@ -29,7 +24,8 @@ import javax.persistence.Table;
     @NamedQuery(name = "KingiseppDistrict.findByLongitude", query = "SELECT k FROM KingiseppDistrict k WHERE k.longitude = :longitude"),
     @NamedQuery(name = "KingiseppDistrict.findByGroupName", query = "SELECT k FROM KingiseppDistrict k WHERE k.groupName = :groupName"),
     @NamedQuery(name = "KingiseppDistrict.findByOtherNames", query = "SELECT k FROM KingiseppDistrict k WHERE k.otherNames = :otherNames"),
-    @NamedQuery(name = "KingiseppDistrict.findById", query = "SELECT k FROM KingiseppDistrict k WHERE k.id = :id")})
+    @NamedQuery(name = "KingiseppDistrict.findById", query = "SELECT k FROM KingiseppDistrict k WHERE k.id = :id"),
+    @NamedQuery(name = "KingiseppDistrict.findAllGroups", query = "SELECT k.groupName FROM KingiseppDistrict k GROUP BY k.groupName")})
 public class KingiseppDistrict implements Serializable {
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)

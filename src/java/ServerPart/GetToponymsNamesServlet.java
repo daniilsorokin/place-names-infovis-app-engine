@@ -1,20 +1,16 @@
 package ServerPart;
 
 import DatabaseAccess.KingiseppDistrict;
-import ProcessPart.Dataset;
 import baseclasses.Tuple;
 import com.google.gson.Gson;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,22 +21,19 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
-public class PostgresDBServlet extends HttpServlet {
+public class GetToponymsNamesServlet extends HttpServlet {
 
-    private Connection connection;
     private EntityManager em;
 
     public void init(ServletConfig servletConfig) throws ServletException {
-        String datasetFile = servletConfig.getInitParameter("datasetFile");
+//        String datasetFile = servletConfig.getInitParameter("datasetFile");
         try {
             // Initialize class
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://deepspace.sfs.uni-tuebingen.de:5432/agnias-sandbox", "abrskva", "germanet");
+            // Create an Entity manager
             em = Persistence.createEntityManagerFactory("VisWebProjectPU").createEntityManager();
-        } catch (SQLException ex) {
-            Logger.getLogger(PostgresDBServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(PostgresDBServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }  catch (ClassNotFoundException ex) {
+            Logger.getLogger(GetToponymsNamesServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -57,33 +50,16 @@ public class PostgresDBServlet extends HttpServlet {
     public void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
-        Object returnData = null;
-        String what = request.getParameter("what");
-        if (what == null) {
-            return;
+
+        List<KingiseppDistrict> kingDistr = em.createNamedQuery("KingiseppDistrict.findAll").getResultList();
+
+        ArrayList<String> rarray = new ArrayList<String>();
+        for (KingiseppDistrict k : kingDistr) {
+            rarray.add(k.getName());
         }
-
-        if (what.equals("list")) {
-            List<KingiseppDistrict> kingDistr = em.createNamedQuery("KingiseppDistrict.findAll").getResultList();
-
-            ArrayList<String> rarray = new ArrayList<String>();
-            for (KingiseppDistrict k : kingDistr) {
-                rarray.add(k.getName());
-            }
-            returnData = rarray;
-        } else if (what.equals("coordinates")){
-            int index = Integer.parseInt(request.getParameter("id"));
-            KingiseppDistrict kd = em.find(KingiseppDistrict.class, index);
-            if (kd != null) {
-                returnData = new Tuple<Double, Double>(kd.getLatitude(), kd.getLongitude());
-            } else {
-                return;
-            }
-        }
-
 
         Gson gson = new Gson();
-        String json = gson.toJson(returnData);
+        String json = gson.toJson(rarray);
         PrintWriter out = response.getWriter();
         try {
             out.write(json);
