@@ -24,6 +24,10 @@
         <servlet-name>GetPolygonsServlet</servlet-name>
         <servlet-class>ServerPart.GetPolygonsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetSearchedToponymsServlet</servlet-name>
+        <servlet-class>ServerPart.GetSearchedToponymsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetToponymsNamesServlet</servlet-name>
         <url-pattern>/get-toponyms-names</url-pattern>
@@ -43,6 +47,10 @@
     <servlet-mapping>
         <servlet-name>GetPolygonsServlet</servlet-name>
         <url-pattern>/getPolygons</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetSearchedToponymsServlet</servlet-name>
+        <url-pattern>/getSearchedToponyms</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
