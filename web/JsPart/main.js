@@ -21,6 +21,7 @@ function initialize()
         zoom:4, 
         center: new google.maps.LatLng(59.4, 29.13333),
         streetViewControl: false,
+        mapTypeControl: false,
         scaleControl: true,
         overviewMapControl: true,					
         mapTypeId:google.maps.MapTypeId.ROADMAP
@@ -63,7 +64,7 @@ function initialize()
                                                groupIdToPolygon[$(this).attr("id")].setMap(null);
                                           groupIdToPolygon[$(this).attr("id")] = null;
                                       });
-        $(ui.unselected).css({ background: "#FFFFFF" });
+        $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
         if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
         toponymIdToMarker[ui.unselected.id] = null;
     } );
@@ -97,7 +98,7 @@ function initialize()
         });        
     });
     $groupsList.on( "selectableunselected", function( event, ui ) {
-        $(ui.unselected).css({ background: "#FFFFFF" });
+        $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
         if (groupIdToPolygon[ui.unselected.id] != null)
              groupIdToPolygon[ui.unselected.id].setMap(null);
         groupIdToPolygon[ui.unselected.id] = null;
@@ -132,7 +133,7 @@ function initialize()
     });
 
     $("#list-selector").buttonset();
-    $("#list-selector span.ui-button-text").addClass("list-selector-button-text");
+    $("#list-selector span.ui-button-text").addClass("custom-button-text");
     $("#list-toponyms").button("disable").click(function (){
         $groupsList.hide('slide', { direction: "right" });
         $toponymsList.show('slide',{ direction: "left" });
@@ -141,18 +142,20 @@ function initialize()
         $toponymsList.hide('slide', { direction: "left" });
         $groupsList.show('slide',{ direction: "right" });
     });
-}
-
-function placeNewMarker(id, coordinates){
-    if (toponymIdToMarker[id] == null){
-        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
-        var marker = new google.maps.Marker({
-            position: latlng,
-            map: myMap
-        });
-        //To Do: Maybe another way to store markers. I am not sure about Javascript handles the memory.
-        toponymIdToMarker[id] = marker;
-    }
+    
+    $("#deselect-button").button()
+                          .click(function(){
+//                                $toponymsList.trigger("click");
+                                if (!$toponymsList.isHidden()) 
+                                    $(".ui-selected", $toponymsList).each(function(){
+                                        $(this).trigger("selectableunselected", {unselected: this});
+                                    });
+                                else if (!$groupsList.isHidden())
+                                    $(".ui-selected", $groupsList).each(function(){
+                                        $(this).trigger("selectableunselected", {unselected: this});
+                                    });
+                          });
+    $("#deselect-button span.ui-button-text").addClass("custom-button-text");
 }
 
 function placeNewMarker(id, coordinates, title){
@@ -232,5 +235,9 @@ function placeNewPolygon (groupName, polygonsCoordinatesList, color){
         {
             this.append("<li id =\"" + idx + "\" class=\"ui-widget-content\">" + data[idx] + "</li>");
         }
+    };
+    
+    $.fn.isHidden = function(){
+        return this.css('display') == 'none';
     };
 })(jQuery);
