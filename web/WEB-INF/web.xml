@@ -13,12 +13,16 @@
         <servlet-class>ServerPart.GetGroupsNamesServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>GetToponymServlet</servlet-name>
-        <servlet-class>ServerPart.GetToponymServlet</servlet-class>
+        <servlet-name>GetToponymsServlet</servlet-name>
+        <servlet-class>ServerPart.GetToponymsServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>GetToponymCoordinatesServlet</servlet-name>
-        <servlet-class>ServerPart.GetToponymCoordinatesServlet</servlet-class>
+        <servlet-name>GetToponymsCoordinatesServlet</servlet-name>
+        <servlet-class>ServerPart.GetToponymsCoordinatesServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetPolygonsServlet</servlet-name>
+        <servlet-class>ServerPart.GetPolygonsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>GetPolygonsServlet</servlet-name>
@@ -33,16 +37,16 @@
         <url-pattern>/get-groups-names</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>GetToponymServlet</servlet-name>
-        <url-pattern>/getToponym</url-pattern>
+        <servlet-name>GetToponymsServlet</servlet-name>
+        <url-pattern>/getToponyms</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>GetToponymCoordinatesServlet</servlet-name>
+        <servlet-name>GetToponymsCoordinatesServlet</servlet-name>
         <url-pattern>/getCoordinates</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetPolygonsServlet</servlet-name>
-        <url-pattern>/GetPolygonsServlet</url-pattern>
+        <url-pattern>/getPolygons</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

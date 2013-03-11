@@ -56,6 +56,7 @@ public class GetPolygonsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
         String groupName = request.getParameter("group_name");
         List<KingiseppDistrict> groupMembers = em.createNamedQuery("KingiseppDistrict.findByGroupName")
                 .setParameter("groupName", groupName).getResultList();
