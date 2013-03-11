@@ -62,9 +62,7 @@ public class GetPolygonsServlet extends HttpServlet {
                 .setParameter("groupName", groupName).getResultList();
         List<Tuple> coordList = new ArrayList<Tuple>(groupMembers.size());
         for (KingiseppDistrict kd : groupMembers) {
-            if (kd.getLatitude() != null && kd.getLongitude() != null) {
-                coordList.add(new Tuple(kd.getLatitude(), kd.getLongitude()));
-            }
+            coordList.add(new Tuple(kd.getLatitude(), kd.getLongitude()));
         }
         Gson gson = new Gson();
         String json = gson.toJson(ProcessPart.PoligonFormation.getPolygons(coordList));
