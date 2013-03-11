@@ -24,10 +24,6 @@
         <servlet-name>GetPolygonsServlet</servlet-name>
         <servlet-class>ServerPart.GetPolygonsServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>GetPolygonsServlet</servlet-name>
-        <servlet-class>ServerPart.GetPolygonsServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>GetToponymsNamesServlet</servlet-name>
         <url-pattern>/get-toponyms-names</url-pattern>
