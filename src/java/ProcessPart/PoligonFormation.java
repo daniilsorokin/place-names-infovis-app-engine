@@ -19,9 +19,13 @@ import java.util.Random;
  */
 public class PoligonFormation {
 
-
     public static List<List<Tuple>> getPolygons(List<Tuple> toponyms) {
+
         List<List<Tuple>> polygons = new ArrayList<List<Tuple>>();
+        if (toponyms.size() < 3) {
+            polygons.add(toponyms);
+            return polygons;
+        }
 
         double[][] points = new double[toponyms.size()][2];
         for (int i = 0; i < toponyms.size(); i++) {
@@ -29,8 +33,8 @@ public class PoligonFormation {
             points[i][1] = (Double) toponyms.get(i).second;
         }
         Random random = new Random(System.currentTimeMillis());
-        int numClusters = 3;
-        double[][] centroids = new double[numClusters][2]; // say we want 3 clusters
+        int numClusters = (int) Math.sqrt(toponyms.size()/2); // http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
+        double[][] centroids = new double[numClusters][2];
         for (int i = 0; i < numClusters; i++) { // pick the necessary amount of existing points to use as centroids
             centroids[i][0] = (Double) toponyms.get(Math.abs(random.nextInt(toponyms.size()))).first;
             centroids[i][1] = (Double) toponyms.get(Math.abs(random.nextInt(toponyms.size()))).second;
@@ -45,29 +49,34 @@ public class PoligonFormation {
         }
 
         for (List<Tuple> cluster : polygons) {
-            System.out.println("Cluster before: " + cluster.size());
             if (cluster.size() > 2) {
                 List<Point> tuplesAsPoints = new ArrayList<Point>(cluster.size());
                 for (Tuple tuple : cluster) {
                     tuplesAsPoints.add(tupleToPoint(tuple));
                 }
-                List<Point> polygon = GrahamScanOriginal.getConvexHull(tuplesAsPoints);
+                List<Point> polygon = null;
+                try {
+                    polygon = GrahamScanOriginal.getConvexHull(tuplesAsPoints);
+                } catch (IllegalArgumentException ex) { // if all points are in one line
+                    polygon = tuplesAsPoints;
+                }
                 cluster.clear();
                 for (Point point : polygon) {
                     cluster.add(pointToTuple(point));
                 }
             }
-            System.out.println("Cluster after: " + cluster.size());
         }
 
         return polygons;
     }
 
     private static Point tupleToPoint(Tuple<Double, Double> tuple) {
-        return new Point((int)(tuple.first * 10000), (int)(tuple.second * 10000));
+        return new Point((int)(tuple.first * 100000), (int)(tuple.second * 100000));
     }
 
     private static Tuple pointToTuple(Point point) {
-        return new Tuple((double)point.x / 10000, (double)point.y / 10000);
+        return new Tuple((double)point.x / 100000, (double)point.y / 100000);
     }
+
+
 }
