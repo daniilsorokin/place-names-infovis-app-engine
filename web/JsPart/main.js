@@ -48,6 +48,8 @@ function initialize()
             for(var toponymIdx in toponymsList){
                 var toponym = toponymsList[toponymIdx];
                 var groupName = toponym.groupName;
+                if (toponymIdToGroupName[groupName] == null)
+                    toponymIdToGroupName[toponym.id] = groupName;
                 if (groupNameToColor[groupName] == null)
                     groupNameToColor[groupName] = colorGeneratorInstance.generateNextColor();
                 $("#"+toponym.id, $toponymsList).css({ background: groupNameToColor[groupName] });
@@ -57,13 +59,17 @@ function initialize()
         });
     });
     $toponymsList.on( "selectableunselected", function( event, ui ) {
-        $(".ui-selected", $groupsList).removeClass("ui-selected")
-                                      .css({ background: "#FFFFFF" })
-                                      .each(function(){
+        $(".ui-selected", $groupsList).each(function(){
+                                        //It is not the best solution, but we can't for now put into jquery because of some strange group names.
+                                        if ($(this).attr("id") == toponymIdToGroupName[ui.unselected.id]){
+                                            $(this).removeClass("ui-selected")
+                                                   .css({ background: "#FFFFFF" });
                                           if (groupIdToPolygon[$(this).attr("id")] != null)
                                                groupIdToPolygon[$(this).attr("id")].setMap(null);
                                           groupIdToPolygon[$(this).attr("id")] = null;
+                                        }
                                       });
+                                      
         $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
         if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
         toponymIdToMarker[ui.unselected.id] = null;
