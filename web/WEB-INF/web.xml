@@ -20,6 +20,10 @@
         <servlet-name>GetToponymsCoordinatesServlet</servlet-name>
         <servlet-class>ServerPart.GetToponymsCoordinatesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetPolygonsServlet</servlet-name>
+        <servlet-class>ServerPart.GetPolygonsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetToponymsNamesServlet</servlet-name>
         <url-pattern>/get-toponyms-names</url-pattern>
@@ -35,6 +39,10 @@
     <servlet-mapping>
         <servlet-name>GetToponymsCoordinatesServlet</servlet-name>
         <url-pattern>/getCoordinates</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetPolygonsServlet</servlet-name>
+        <url-pattern>/getPolygons</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

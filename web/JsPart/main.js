@@ -4,6 +4,7 @@ var myMap;
 var $toponymsList;
 
 var toponymIdToMarker = {};
+var groupIdToPolygon = {};
 var groupNameToColor = {};
 var toponymIdToGroupName = {};
 
@@ -56,7 +57,12 @@ function initialize()
     });
     $toponymsList.on( "selectableunselected", function( event, ui ) {
         $(".ui-selected", $groupsList).removeClass("ui-selected")
-                                      .css({ background: "#FFFFFF" });
+                                      .css({ background: "#FFFFFF" })
+                                      .each(function(){
+                                          if (groupIdToPolygon[$(this).attr("id")] != null)
+                                               groupIdToPolygon[$(this).attr("id")].setMap(null);
+                                          groupIdToPolygon[$(this).attr("id")] = null;
+                                      });
         $(ui.unselected).css({ background: "#FFFFFF" });
         if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
         toponymIdToMarker[ui.unselected.id] = null;
@@ -82,10 +88,19 @@ function initialize()
                     }
                 }
             });
+            $.ajax({url: "getPolygons", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
+                data: {group_name: groupName},
+                success: function(polygonsCoordinatesList) {
+                    placeNewPolygon(groupName, polygonsCoordinatesList, groupNameToColor[groupName]);
+                }
+            });
         });        
     });
     $groupsList.on( "selectableunselected", function( event, ui ) {
         $(ui.unselected).css({ background: "#FFFFFF" });
+        if (groupIdToPolygon[ui.unselected.id] != null)
+             groupIdToPolygon[ui.unselected.id].setMap(null);
+        groupIdToPolygon[ui.unselected.id] = null;
         $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
                 data: {group_name: ui.unselected.id},
                 success: function(toponymsList) {
@@ -93,7 +108,8 @@ function initialize()
                         var toponym = toponymsList[toponymIdx];
                         toponymIdToMarker[toponym.id].setMap(null);
                         toponymIdToMarker[toponym.id] = null;
-                        $("#"+toponym.id, $toponymsList).removeClass("ui-selected");
+                        $("#"+toponym.id, $toponymsList).removeClass("ui-selected")
+                                                        .css({ background: "#FFFFFF" });
                     }
                 }
             });
@@ -153,7 +169,7 @@ function placeNewMarker(id, coordinates, title){
 }
 
 /**
- * Places a marker on the mapa nd stores it for later reference.
+ * Places a marker on the map and stores it for later reference.
  * 
  * @param {int} id marker's id.
  * @param {lat: latitude, lng: longitude} coordinates
@@ -177,6 +193,36 @@ function placeNewMarker (id, coordinates, color, title){
         circle = new google.maps.Circle(circleOptions);
         toponymIdToMarker[id] = circle;
     }  
+}
+
+/**
+ * Places a new polygon on a map and stores it for later reference.
+ * 
+ * @param {type} groupName
+ * @param {type} polygonsCoordinatesList
+ * @param {type} color
+ * @returns {undefined}
+ */
+function placeNewPolygon (groupName, polygonsCoordinatesList, color){
+    if (groupIdToPolygon[groupName] == null){
+        for (var pc in polygonsCoordinatesList){
+            var polygonCoordinates = polygonsCoordinatesList[pc];
+            for (var p in polygonCoordinates){
+                polygonCoordinates[p] = new google.maps.LatLng(polygonCoordinates[p].first, polygonCoordinates[p].second);
+            }
+        }
+        var polygonOptions = {
+            paths: polygonsCoordinatesList,
+                    clickable: false,
+                    strokeColor: color,
+                    strokeOpacity: 0.5,
+                    strokeWeight: 2,
+                    fillColor: color,
+                    map: myMap,
+                    fillOpacity: 0.2};
+        var polygon = new google.maps.Polygon(polygonOptions);
+        groupIdToPolygon[groupName] = polygon;
+    }
 }
 
 
