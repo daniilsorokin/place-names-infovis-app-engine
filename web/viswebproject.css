@@ -32,6 +32,7 @@ div.mousescroll {
     overflow:-moz-scrollbars-vertical; 
     height: 100%; 
     position: relative;
+    text-align: center;
 }
 
 .list { 
@@ -40,6 +41,7 @@ div.mousescroll {
     padding: 0px;  
     width: 100%;
     position: absolute;
+    text-align: left;
 }
 .list li { 
     margin: 3px; 
@@ -54,10 +56,20 @@ div.mousescroll {
     font-size: 62.5%; }
 .ui-button.list-selector-button{
     width: 35%; }
-.ui-button-text.list-selector-button-text{
+.ui-button-text.custom-button-text{
     padding: 1px; }
+.list-selector-button.ui-state-active {
+    font-weight: bold;
+    padding: 1px;
+}
 
 /* particular elements (based on id)*/
+#deselect-button {
+    width: 97%;
+    margin: 1px;
+    padding: 0px;
+}
+
 
 td#list-selector-container { 
     height: 18px;
