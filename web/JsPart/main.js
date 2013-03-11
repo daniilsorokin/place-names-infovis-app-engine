@@ -3,7 +3,11 @@ var myMap;
 
 var $toponymsList;
 
-var markers = {};
+var toponymIdToMarker = {};
+var groupNameToColor = {};
+var toponymIdToGroupName = {};
+
+var colorGeneratorInstance;
 
 var DataSources = [{name:"Ingria area", fileName: "toponyms_Ingria.txt", startPoint: new google.maps.LatLng(59.4, 29.13333), startZoom: 8}];
 
@@ -26,55 +30,69 @@ function initialize()
     myMap.setCenter(DataSources[0].startPoint);
     myMap.setZoom(DataSources[0].startZoom);
     
+    colorGeneratorInstance = new colorGenerator();
+    
     $toponymsList = $("#toponyms-list");
     $groupsList = $("#groups-list");
     $groupsList.hide();
     $(".list").selectable();
     
     $toponymsList.on( "selectablestop", function( event, ui ) {
-//        $(".ui-selected", $groupsList).each(function() {
-//             $(this).removeClass("ui-selected");
-//        });  
         var ids = new Array();
         $(".ui-selected" , this).each(function() {
-             ids.push($(this).attr('id'));
+            ids.push($(this).attr('id'));
         });  
         $.getJSON("getToponyms", {id: ids}, function(toponymsList) {
             for(var toponymIdx in toponymsList){
                 var toponym = toponymsList[toponymIdx];
-                placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude});
+                var groupName = toponym.groupName;
+                if (groupNameToColor[groupName] == null)
+                    groupNameToColor[groupName] = colorGeneratorInstance.generateNextColor();
+                $("#"+toponym.id, $toponymsList).css({ background: groupNameToColor[groupName] });
+                placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude}, 
+                                groupNameToColor[groupName], toponym.name);
             }
         });
-    } );
+    });
     $toponymsList.on( "selectableunselected", function( event, ui ) {
-        if (markers[ui.unselected.id] != null) markers[ui.unselected.id].setMap(null);
-        markers[ui.unselected.id] = null;
+        $(".ui-selected", $groupsList).removeClass("ui-selected")
+                                      .css({ background: "#FFFFFF" });
+        $(ui.unselected).css({ background: "#FFFFFF" });
+        if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
+        toponymIdToMarker[ui.unselected.id] = null;
     } );
     
     $groupsList.on( "selectablestop", function( event, ui ) {
         //$(".ui-selected", $toponymsList).removeClass("ui-selected");
-//        console.log($(".ui-selected", $toponymsList));
         $(".ui-selected" , this).each(function() {
+            var groupName = $(this).attr("id");
+            if (groupNameToColor[groupName] == null)
+                groupNameToColor[groupName] = colorGeneratorInstance.generateNextColor();
+            $(this).css({ background: groupNameToColor[groupName] });
+            
             $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
-                data: {group_name: $(this).attr("id")},
+                data: {group_name: groupName},
                 success: function(toponymsList) {
                     for(var toponymIdx in toponymsList){
                         var toponym = toponymsList[toponymIdx];
-                        placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude});
-                        $("#"+toponym.id, $toponymsList).addClass("ui-selected");
+                        placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude}, 
+                                        groupNameToColor[groupName], toponym.name);
+                        $("#"+toponym.id, $toponymsList).addClass("ui-selected")
+                                                        .css({ background: groupNameToColor[groupName] });
                     }
                 }
             });
         });        
     });
     $groupsList.on( "selectableunselected", function( event, ui ) {
+        $(ui.unselected).css({ background: "#FFFFFF" });
         $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
                 data: {group_name: ui.unselected.id},
                 success: function(toponymsList) {
                     for(var toponymIdx in toponymsList){
                         var toponym = toponymsList[toponymIdx];
-                        markers[toponym.id].setMap(null);
-                        markers[toponym.id] = null;
+                        toponymIdToMarker[toponym.id].setMap(null);
+                        toponymIdToMarker[toponym.id] = null;
                         $("#"+toponym.id, $toponymsList).removeClass("ui-selected");
                     }
                 }
@@ -110,16 +128,55 @@ function initialize()
 }
 
 function placeNewMarker(id, coordinates){
-    if (markers[id] == null){
+    if (toponymIdToMarker[id] == null){
+        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: myMap
+        });
+        //To Do: Maybe another way to store markers. I am not sure about Javascript handles the memory.
+        toponymIdToMarker[id] = marker;
+    }
+}
+
+function placeNewMarker(id, coordinates, title){
+    if (toponymIdToMarker[id] == null){
         var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
         var marker = new google.maps.Marker({
             position: latlng,
             map: myMap,
-            title:"Hello World!"
+            title: title
         });
         //To Do: Maybe another way to store markers. I am not sure about Javascript handles the memory.
-        markers[id] = marker;
+        toponymIdToMarker[id] = marker;
     }
+}
+
+/**
+ * Places a marker on the mapa nd stores it for later reference.
+ * 
+ * @param {int} id marker's id.
+ * @param {lat: latitude, lng: longitude} coordinates
+ * @param {type} color
+ * @param {string} title
+ */
+function placeNewMarker (id, coordinates, color, title){
+    if (toponymIdToMarker[id] == null){
+        var opacity = 1.0;
+        var radius = 1000; 
+        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+        var circleOptions = {
+            strokeWeight: 0,
+            fillColor: color,
+            fillOpacity: opacity,
+            map: myMap,
+            center: latlng,
+            title: title,
+            radius: radius
+        };
+        circle = new google.maps.Circle(circleOptions);
+        toponymIdToMarker[id] = circle;
+    }  
 }
 
 

@@ -46,7 +46,7 @@ div.mousescroll {
     padding: 0.4em; 
     font-size: 10pt; 
     height: 14px; }
-.list .ui-selecting { background: #FECA40; }
+.list .ui-selecting { border-color: #FECA40; }
 .list .ui-selected { background: #F39814; color: white; }
 
 .ui-button {
