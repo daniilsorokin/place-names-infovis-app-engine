@@ -113,7 +113,7 @@ function initialize()
                 success: function(toponymsList) {
                     for(var toponymIdx in toponymsList){
                         var toponym = toponymsList[toponymIdx];
-                        toponymIdToMarker[toponym.id].setMap(null);
+                        if (toponymIdToMarker[toponym.id] != null) toponymIdToMarker[toponym.id].setMap(null);
                         toponymIdToMarker[toponym.id] = null;
                         $("#"+toponym.id, $toponymsList).removeClass("ui-selected")
                                                         .css({ background: "#FFFFFF" });
