@@ -6,11 +6,9 @@
 package ServerPart;
 
 import DatabaseAccess.KingiseppDistrict;
-import baseclasses.Tuple;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author abrskva
  */
-public class GetPolygonsServlet extends HttpServlet {
+public class GetSearchedToponymsServlet extends HttpServlet {
     private EntityManager em;
 
     /**
@@ -46,7 +44,7 @@ public class GetPolygonsServlet extends HttpServlet {
         }
     }
    
-    /**
+    /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -57,24 +55,17 @@ public class GetPolygonsServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-        String groupName = request.getParameter("group_name");
-        List<KingiseppDistrict> groupMembers = em.createNamedQuery("KingiseppDistrict.findByGroupName")
-                .setParameter("groupName", groupName).getResultList();
-        List<Tuple> coordList = new ArrayList<Tuple>(groupMembers.size());
-        for (KingiseppDistrict kd : groupMembers) {
-            if (kd.getLatitude() != null && kd.getLongitude() != null) {
-                coordList.add(new Tuple(kd.getLatitude(), kd.getLongitude()));
-            }
-        }
+        String searchTerm = request.getParameter("search");
+        List<String> groupMembers = em.createQuery("SELECT k.name FROM KingiseppDistrict k WHERE k.name LIKE :name", String.class)
+                .setParameter("name", searchTerm).getResultList();
         Gson gson = new Gson();
-        String json = gson.toJson(ProcessPart.PoligonFormation.getPolygons(coordList));
+        String json = gson.toJson(groupMembers);
         PrintWriter out = response.getWriter();
         try {
             out.write(json);
         } finally {
             out.close();
         }
-
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
