@@ -235,7 +235,12 @@ function placeNewPolygon (groupName, polygonsCoordinatesList, color){
 }
 
 
+// Additional JQuery obejct methods
 (function( $ ) {
+    /**
+     * 
+     * @param {type} data
+     */
     $.fn.fillWith = function(data){
         for (idx in data)
         {
@@ -243,6 +248,10 @@ function placeNewPolygon (groupName, polygonsCoordinatesList, color){
         }
     };
     
+    /**
+     * 
+     * @returns {Boolean}
+     */
     $.fn.isHidden = function(){
         return this.css('display') == 'none';
     };
