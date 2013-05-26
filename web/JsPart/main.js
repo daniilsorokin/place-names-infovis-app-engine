@@ -27,7 +27,7 @@ function initialize()
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
     $.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-    
+    google.maps.visualRefresh = true;
     myMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     myMap.setCenter(DataSources[0].startPoint);
     myMap.setZoom(DataSources[0].startZoom);
