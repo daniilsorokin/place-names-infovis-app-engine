@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+    <head>
+        <title>Toponyms InfoVis Project</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false"></script>
+        <script type="text/javascript" src="javascript/main.js"></script>
+        <script type="text/javascript" src="javascript/colors.js"></script>
+        <script type="text/javascript">
+            $( document ).ready( function() {
+                initialize();
+            });
+        </script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+        <link rel="stylesheet" href="viswebproject.css" />
+    </head>
+    <body>
+        <table id="page-structure" class="page-structure">
+            <tr><td id="list-selector-container" style="width: 20%;">
+                    <div id="list-selector"> 
+                        <input type="radio" id="list-toponyms" name="radio" checked="checked"/>
+                        <label for="list-toponyms" class="list-selector-button">Toponyms</label>
+                        <input type="radio" id="list-groups" name="radio"/>
+                        <label for="list-groups" class="list-selector-button">Groups</label>
+                    </div>
+                </td>
+                <td style="width:80%;" rowspan="2"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
+            <tr><td>
+                    <div class="mousescroll">
+                        <button id="deselect-button">Deselect all</button>
+                        <ul id="toponyms-list" class="list">
+                        </ul>
+                        <ul id="groups-list" class="list">
+                        </ul>
+                    </div>
+                </td></tr>
+        </table>
+    </body>
+</html>
