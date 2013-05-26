@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 @Path("")
-public class ToponymClustersVisualization {
+public class ToponymClustersVisualizationREST {
     
     @Path("message")
     @GET

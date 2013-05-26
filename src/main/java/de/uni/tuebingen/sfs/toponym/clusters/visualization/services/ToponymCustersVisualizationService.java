@@ -1,7 +1,7 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.services;
 
-import de.uni.tuebingen.sfs.toponym.clusters.visualization.resources.ToponymClustersVisualization;
-import java.util.Collections;
+import com.google.common.collect.ImmutableSet;
+import de.uni.tuebingen.sfs.toponym.clusters.visualization.resources.*;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -12,8 +12,8 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("visualization")
 public class ToponymCustersVisualizationService extends Application {
-    private Set<Object> singletons = Collections.<Object>singleton(new ToponymClustersVisualization());
-
+    private ImmutableSet<Object> singletons = ImmutableSet.of(new ToponymClustersVisualizationREST(), new ToponymFacadeREST());
+    
     public Set<Object> getSingletons (){
         return singletons;
     }
