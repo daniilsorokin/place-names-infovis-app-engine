@@ -44,16 +44,17 @@ function initialize()
         $(".ui-selected" , this).each(function() {
             ids.push($(this).attr('id'));
         });  
-        $.getJSON("getToponyms", {id: ids}, function(toponymsList) {
-            for(var toponymIdx in toponymsList){
-                var toponym = toponymsList[toponymIdx];
-                var groupName = toponym.groupName;
+        $.getJSON("visualization/toponymobject/set", {id: ids}, function(data) {
+            var toponyms = data.toponymObject;
+            for(var toponymIdx in toponyms){
+                var toponym = toponyms[toponymIdx];
+                var groupName = toponym.formant.formantName;
                 if (toponymIdToGroupName[groupName] == null)
-                    toponymIdToGroupName[toponym.id] = groupName;
+                    toponymIdToGroupName[toponym.toponymNo] = groupName;
                 if (groupNameToColor[groupName] == null)
                     groupNameToColor[groupName] = colorGeneratorInstance.generateNextColor();
-                $("#"+toponym.id, $toponymsList).css({ background: groupNameToColor[groupName] });
-                placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude}, 
+                $("#"+toponym.toponymNo, $toponymsList).css({ background: groupNameToColor[groupName] });
+                placeNewMarker(toponym.toponymNo, {lat: toponym.latitude, lng: toponym.longitude}, 
                                 groupNameToColor[groupName], toponym.name);
             }
         });
@@ -121,19 +122,20 @@ function initialize()
                 }
             });
     });
-    $.getJSON("visualization/toponym", {} ,function(data) {
-        var toponyms = data.toponym;
+    $.getJSON("visualization/toponymobject/all", {} ,function(data) {
+        var toponyms = data.toponymObject;
         for (tIdx in toponyms) {
             var toponym = toponyms[tIdx];
-            $toponymsList.append("<li id =\"" + toponym.id + "\" class=\"ui-widget-content\">" + toponym.name + "</li>");
+            $toponymsList.append("<li id =\"" + toponym.toponymNo + "\" class=\"ui-widget-content\">" + toponym.name + "</li>");
         }
         $("#list-toponyms").button("enable");
     });
     
-    $.getJSON("get-groups-names", {} ,function(groupsList) {
-        for (nameIdx in groupsList) {
-            var groupName = groupsList[nameIdx];
-            $groupsList.append("<li id =\"" + groupName + "\" class=\"ui-widget-content\">" + groupName + "</li>");
+    $.getJSON("visualization/formant/all", {} ,function(data) {
+        var formants = data.formant;
+        for (fIdx in formants) {
+            var formantObj = formants[fIdx];
+            $groupsList.append("<li id =\"" + formantObj.formantNo + "\" class=\"ui-widget-content\">" + formantObj.formantName + "</li>");
         }
         $("#list-groups").button("enable");
     });
