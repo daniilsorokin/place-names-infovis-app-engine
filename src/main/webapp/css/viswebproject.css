@@ -74,6 +74,7 @@ div.mousescroll {
 td#list-selector-container { 
     height: 18px;
     border-bottom: 1px solid #c9c9fd;
+    text-align: center;
 }
 
 div#list-selector{
