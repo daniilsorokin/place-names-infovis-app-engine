@@ -9,11 +9,7 @@
         <script type="text/javascript" src="javascript/main.js"></script>
         <script type="text/javascript" src="javascript/colors.js"></script>
         <script type="text/javascript" src="javascript/bootstrap.js"></script>
-        <script type="text/javascript">
-            $( document ).ready( function() {
-                initialize();
-            });
-        </script>
+
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
         <link rel="stylesheet" href="css/viswebproject.css" />
         <link rel="stylesheet" href="css/bootstrap.css" />
@@ -28,8 +24,8 @@
                         <label for="list-groups" class="list-selector-button">Groups</label>
                     </div>-->
                         <div id="list-selector" class="btn-group" data-toggle="buttons-radio">
-                            <button id="list-toponyms" type="button" class="btn btn-mini">Toponyms</button>
-                            <button id="list-groups" type="button" class="btn btn-mini">Groups</button>
+                            <button id="list-toponyms" type="button" class="btn btn-mini list-selector-button active" disabled>Toponyms</button>
+                            <button id="list-groups" type="button" class="btn btn-mini list-selector-button" disabled>Groups</button>
                         </div>
                 </td>
                 <td style="width:80%;" rowspan="2"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>

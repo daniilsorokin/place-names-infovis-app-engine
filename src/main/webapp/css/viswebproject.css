@@ -54,13 +54,16 @@ div.mousescroll {
 .ui-button {
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
     font-size: 62.5%; }
-.ui-button.list-selector-button{
-    width: 35%; }
+
 .ui-button-text.custom-button-text{
     padding: 1px; }
 .list-selector-button.ui-state-active {
     font-weight: bold;
     padding: 1px;
+}
+
+.list-selector-button{
+    min-width: 100px; 
 }
 
 /* particular elements (based on id) */
@@ -80,8 +83,6 @@ td#list-selector-container {
 div#list-selector{
     margin: 0px 0px; 
     padding: 2px 0px 4px 0px;
-    text-align: center;
-    vertical-align: middle;
 }
 
 
