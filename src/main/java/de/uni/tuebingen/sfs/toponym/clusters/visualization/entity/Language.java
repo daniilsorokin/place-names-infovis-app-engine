@@ -58,18 +58,34 @@ public class Language implements Serializable {
         return languageNo;
     }
     
+    public void setLanguageNo(Integer languageNo) {
+        this.languageNo = languageNo;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNameRus() {
         return nameRus;
     }
 
+    public void setNameRus(String nameRus) {
+        this.nameRus = nameRus;
+    }
+
     @XmlTransient
     @JsonIgnore
     public List<ToponymObject> getToponymObjectList() {
         return toponymObjectList;
+    }
+
+    public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
+        this.toponymObjectList = toponymObjectList;
     }
 
     @Override

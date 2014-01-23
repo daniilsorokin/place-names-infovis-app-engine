@@ -61,6 +61,12 @@ public class ToponymObjectFacadeREST extends AbstractFacade<ToponymObject> {
     public List<ToponymObject> findAll() {
         return super.findAll();
     }
+    
+    @GET
+    @Path("name/{id}")
+    public String findName(@PathParam("id") Integer id) {
+        return super.find(id).getEnglishTransliteration();
+    }   
 
     @GET
     @Path("count")

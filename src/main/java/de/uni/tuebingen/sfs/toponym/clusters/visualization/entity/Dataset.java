@@ -57,18 +57,34 @@ public class Dataset implements Serializable {
         return datasetNo;
     }
 
+    public void setDatasetNo(Integer datasetNo) {
+        this.datasetNo = datasetNo;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getInfo() {
         return info;
     }
 
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @XmlTransient
     @JsonIgnore
     public List<ToponymObject> getToponymObjectList() {
         return toponymObjectList;
+    }
+
+    public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
+        this.toponymObjectList = toponymObjectList;
     }
 
     @Override

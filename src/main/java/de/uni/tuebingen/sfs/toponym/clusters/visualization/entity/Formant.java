@@ -58,8 +58,16 @@ public class Formant implements Serializable {
         return formantNo;
     }
 
+    public void setFormantNo(Integer formantNo) {
+        this.formantNo = formantNo;
+    }
+
     public String getFormantName() {
         return formantName;
+    }
+
+    public void setFormantName(String formantName) {
+        this.formantName = formantName;
     }
 
     @XmlTransient
@@ -68,10 +76,18 @@ public class Formant implements Serializable {
         return affixList;
     }
 
+    public void setAffixList(List<Affix> affixList) {
+        this.affixList = affixList;
+    }
+
     @XmlTransient
     @JsonIgnore
     public List<ToponymObject> getToponymObjectList() {
         return toponymObjectList;
+    }
+
+    public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
+        this.toponymObjectList = toponymObjectList;
     }
 
     @Override

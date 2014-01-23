@@ -58,12 +58,24 @@ public class ToponymType implements Serializable {
         return typeNo;
     }
 
+    public void setTypeNo(Integer typeNo) {
+        this.typeNo = typeNo;
+    }
+
     public String getName() {
         return name;
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getNameRus() {
         return nameRus;
+    }
+
+    public void setNameRus(String nameRus) {
+        this.nameRus = nameRus;
     }
 
     @XmlTransient
@@ -72,6 +84,10 @@ public class ToponymType implements Serializable {
         return toponymObjectList;
     }
     
+    public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
+        this.toponymObjectList = toponymObjectList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

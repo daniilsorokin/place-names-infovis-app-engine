@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -81,20 +82,40 @@ public class ToponymObject implements Serializable {
         return toponymNo;
     }
 
+    public void setToponymNo(Integer toponymNo) {
+        this.toponymNo = toponymNo;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getOtherNames() {
         return otherNames;
     }
 
+    public void setOtherNames(String otherNames) {
+        this.otherNames = otherNames;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
 
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     public Double getLongitude() {
         return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     @XmlTransient
@@ -103,24 +124,48 @@ public class ToponymObject implements Serializable {
         return affixList;
     }
 
+    public void setAffixList(List<Affix> affixList) {
+        this.affixList = affixList;
+    }
+
     public ToponymType getType() {
         return type;
+    }
+
+    public void setType(ToponymType type) {
+        this.type = type;
     }
 
     public Language getLanguage() {
         return language;
     }
 
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     public String getEnglishTransliteration() {
         return englishTransliteration;
-    }   
+    }
+
+    public void setEnglishTransliteration(String englishTransliteration) {
+        this.englishTransliteration = englishTransliteration;
+    }    
     
     public Formant getFormant() {
         return formant;
     }
 
+    public void setFormant(Formant formant) {
+        this.formant = formant;
+    }
+
     public Dataset getDataset() {
         return dataset;
+    }
+
+    public void setDataset(Dataset dataset) {
+        this.dataset = dataset;
     }
 
     @Override

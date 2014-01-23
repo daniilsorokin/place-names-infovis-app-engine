@@ -41,7 +41,6 @@ public class FormantFacadeREST extends AbstractFacade<Formant> {
     }
 
     @GET
-    @Path("all")
     @Override
     @Produces({"application/xml", "application/json"})
     public List<Formant> findAll() {
