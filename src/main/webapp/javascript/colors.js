@@ -1,5 +1,5 @@
 /*
- * A set of fucntions to work with color.
+ * A set of functions to work with color.
  * @author Daniil Sorokin <daniil.sorokin@student.uni-tuebingen.de>
  */
 
