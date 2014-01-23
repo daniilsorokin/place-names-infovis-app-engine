@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -51,15 +46,10 @@ public class Dataset implements Serializable {
     @OneToMany(mappedBy = "dataset")
     private List<ToponymObject> toponymObjectList;
 
-    public Dataset() {
+    protected Dataset() {
     }
 
-    public Dataset(Integer datasetNo) {
-        this.datasetNo = datasetNo;
-    }
-
-    public Dataset(Integer datasetNo, String name) {
-        this.datasetNo = datasetNo;
+    public Dataset(String name) {
         this.name = name;
     }
 
@@ -67,34 +57,18 @@ public class Dataset implements Serializable {
         return datasetNo;
     }
 
-    public void setDatasetNo(Integer datasetNo) {
-        this.datasetNo = datasetNo;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getInfo() {
         return info;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
     @XmlTransient
     @JsonIgnore
     public List<ToponymObject> getToponymObjectList() {
         return toponymObjectList;
-    }
-
-    public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
-        this.toponymObjectList = toponymObjectList;
     }
 
     @Override
@@ -106,7 +80,6 @@ public class Dataset implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Dataset)) {
             return false;
         }
@@ -119,7 +92,7 @@ public class Dataset implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Dataset[ datasetNo=" + datasetNo + " ]";
+        return "Dataset[ datasetNo=" + datasetNo + "  name=" + name + " ]";
     }
 
 }

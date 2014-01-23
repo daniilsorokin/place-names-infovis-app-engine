@@ -1,20 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.resources;
 
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymType;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,33 +18,19 @@ import javax.ws.rs.Produces;
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 @Stateless
-@Path("de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.toponymtype")
+@Path("toponymtype")
 public class ToponymTypeFacadeREST extends AbstractFacade<ToponymType> {
     @PersistenceContext(unitName = "de.uni.tuebingen.sfs_toponym-clusters-visualization_war_2.0PU")
     private EntityManager em;
 
     public ToponymTypeFacadeREST() {
         super(ToponymType.class);
-    }
-
-    @POST
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void create(ToponymType entity) {
-        super.create(entity);
-    }
-
-    @PUT
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void edit(ToponymType entity) {
-        super.edit(entity);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            Class.forName("org.postgresql.Driver");
+            em = Persistence.createEntityManagerFactory("de.uni.tuebingen.sfs_toponym-clusters-visualization_war_2.0PU").createEntityManager();
+        }  catch (ClassNotFoundException ex) {
+            Logger.getLogger(ToponymTypeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }        
     }
 
     @GET
@@ -65,13 +45,6 @@ public class ToponymTypeFacadeREST extends AbstractFacade<ToponymType> {
     @Produces({"application/xml", "application/json"})
     public List<ToponymType> findAll() {
         return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
-    public List<ToponymType> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
     }
 
     @GET

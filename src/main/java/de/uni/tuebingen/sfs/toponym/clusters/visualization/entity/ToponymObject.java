@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -53,8 +48,12 @@ public class ToponymObject implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "other_names")
     private String otherNames;
+    @Column(name = "english_transliteration")
+    private String englishTransliteration;    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "latitude")
     private Double latitude;
+    @Column(name = "longitude")
     private Double longitude;
     @ManyToMany(mappedBy = "toponymObjectList")
     private List<Affix> affixList;
@@ -71,15 +70,10 @@ public class ToponymObject implements Serializable {
     @ManyToOne
     private Dataset dataset;
 
-    public ToponymObject() {
+    protected ToponymObject() {
     }
 
-    public ToponymObject(Integer toponymNo) {
-        this.toponymNo = toponymNo;
-    }
-
-    public ToponymObject(Integer toponymNo, String name) {
-        this.toponymNo = toponymNo;
+    public ToponymObject(String name) {
         this.name = name;
     }
 
@@ -87,40 +81,20 @@ public class ToponymObject implements Serializable {
         return toponymNo;
     }
 
-    public void setToponymNo(Integer toponymNo) {
-        this.toponymNo = toponymNo;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getOtherNames() {
         return otherNames;
     }
 
-    public void setOtherNames(String otherNames) {
-        this.otherNames = otherNames;
-    }
-
     public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
     public Double getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
     }
 
     @XmlTransient
@@ -129,40 +103,24 @@ public class ToponymObject implements Serializable {
         return affixList;
     }
 
-    public void setAffixList(List<Affix> affixList) {
-        this.affixList = affixList;
-    }
-
     public ToponymType getType() {
         return type;
-    }
-
-    public void setType(ToponymType type) {
-        this.type = type;
     }
 
     public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
+    public String getEnglishTransliteration() {
+        return englishTransliteration;
+    }   
+    
     public Formant getFormant() {
         return formant;
     }
 
-    public void setFormant(Formant formant) {
-        this.formant = formant;
-    }
-
     public Dataset getDataset() {
         return dataset;
-    }
-
-    public void setDataset(Dataset dataset) {
-        this.dataset = dataset;
     }
 
     @Override
@@ -174,7 +132,6 @@ public class ToponymObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ToponymObject)) {
             return false;
         }
@@ -187,7 +144,7 @@ public class ToponymObject implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject[ toponymNo=" + toponymNo + " ]";
+        return "ToponymObject[ toponymNo=" + toponymNo + "  name=" + name + " ]";
     }
 
 }
