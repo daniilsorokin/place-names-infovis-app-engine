@@ -36,12 +36,14 @@ VIZAPP.dataInterface = function () {
                     var toponym = loadedToponymObjects[i];
                     $("#toponyms-list").append("<li id =\"" + toponym.toponymNo + "\" class=\"ui-widget-content\">" + toponym.name + "</li>");
                 }
+                $("#list-toponyms").removeAttr("disabled");
             });
             loadFormants(function(loadedFormants) {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
                     $("#groups-list").append("<li id =\"" + formant.formantNo + "\" class=\"ui-widget-content\">" + formant.formantName + "</li>");
                 }
+                $("#list-groups").removeAttr("disabled");
             });
         }
     };

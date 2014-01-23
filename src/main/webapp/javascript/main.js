@@ -1,47 +1,18 @@
 var VIZAPP = new Object();
 
 
-/** Main map. */
-var myMap; 
-
-//var $toponymsList;
-
 var toponymIdToMarker = {};
 var groupIdToPolygon = {};
 var groupNameToColor = {};
 var toponymIdToGroupName = {};
 
-var colorGeneratorInstance;
-
-
-/**
- * Main function which should be called after the loading of the page.
- */
-function initialize()
+VIZAPP.initialize = function()
 {	    
-//    var myOptions = { 
-//        zoom:4, 
-//        center: new google.maps.LatLng(59.4, 29.13333),
-//        streetViewControl: false,
-//        mapTypeControl: false,
-//        scaleControl: true,
-//        overviewMapControl: true,					
-//        mapTypeId:google.maps.MapTypeId.ROADMAP
-//    };
     $.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
-//    google.maps.visualRefresh = true;
-//    myMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-//    myMap.setCenter(DataSources[0].startPoint);
-//    myMap.setZoom(DataSources[0].startZoom);
     VIZAPP.gui.init();
     VIZAPP.dataInterface.load();
 //    colorGeneratorInstance = new colorGenerator();
-//    
-//    $toponymsList = $("#toponyms-list");
-//    $groupsList = $("#groups-list");
-    $("#groups-list").hide();
-//    $(".list").selectable();
-//    
+    
 //    $toponymsList.on( "selectablestop", function( event, ui ) {
 //        var ids = new Array();
 //        $(".ui-selected" , this).each(function() {
@@ -130,35 +101,7 @@ function initialize()
 //                }
 //            });
 //    });
-    
-//    $.getJSON("request/toponymobject/", {} ,function(data) {
-//        var toponyms = data.toponymObject;
-//        for (tIdx in toponyms) {
-//            var toponym = toponyms[tIdx];
-//            $toponymsList.append("<li id =\"" + toponym.toponymNo + "\" class=\"ui-widget-content\">" + toponym.name + "</li>");
-//        }
-//        $("#list-toponyms").button("enable");
-//    });
-//    
-//    $.getJSON("request/formant/", {} ,function(data) {
-//        var formants = data.formant;
-//        for (fIdx in formants) {
-//            var formantObj = formants[fIdx];
-//            $groupsList.append("<li id =\"" + formantObj.formantNo + "\" class=\"ui-widget-content\">" + formantObj.formantName + "</li>");
-//        }
-//        $("#list-groups").button("enable");
-//    });
 
-//    $("#list-selector").buttonset();
-//    $("#list-selector span.ui-button-text").addClass("custom-button-text");
-//    $("#list-toponyms").button("disable").click(function (){
-//        $groupsList.hide('slide', { direction: "right" });
-//        $toponymsList.show('slide',{ direction: "left" });
-//    });
-//    $("#list-groups").button("disable").click(function (){
-//        $toponymsList.hide('slide', { direction: "left" });
-//        $groupsList.show('slide',{ direction: "right" });
-//    });
 //    
 //    $("#deselect-button").button()
 //                          .click(function(){
