@@ -39,12 +39,8 @@ VIZAPP.gui = function () {
             
             $toponymsList.on( "selectablestop", function( event, ui ) {
                 var ids = new Array();
-                $(".ui-selected" , this).each(function() { ids.push($(this).attr('id')); });  
-                $.getJSON("visualization/toponymobject/set", {id: ids}, function(data) {
-                    var toponyms = data.toponymObject;
-                    if (!(toponyms instanceof Array)){
-                        toponyms = [toponyms]
-                    }
+                $(".ui-selected" , this).each(function() { ids.push($(this).attr('id')); });
+                VIZAPP.dataInterface.getSet(ids, function(toponyms) {
                     for(var toponymIdx in toponyms){
                         var toponym = toponyms[toponymIdx];
                         var groupName = toponym.formant.formantName;

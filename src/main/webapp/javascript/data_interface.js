@@ -30,6 +30,15 @@ VIZAPP.dataInterface = function () {
     };
     
     return {
+        getSet: function(ids, doWithResults) {
+            $.getJSON("request/toponymobject/set", {id: ids}, function(data) {
+                var toponyms = data.toponymObject;
+                if (!(toponyms instanceof Array)){
+                    toponyms = [toponyms]
+                }
+                doWithResults(toponyms);
+            });
+        },
         load: function () {
             loadToponymObjects(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
