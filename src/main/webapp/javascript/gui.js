@@ -25,16 +25,35 @@ VIZAPP.gui = function () {
             var $groupsList = $("#groups-list");
             
             $(".list").selectable();
+            
             $toponymsList.show();
             $groupsList.hide();
             
-            $("#list-toponyms").click(function (){
+            $("#select-toponyms-btn").click(function (){
                 $groupsList.hide('slide', { direction: "right" });
                 $toponymsList.show('slide',{ direction: "left" });
             });
-            $("#list-groups").click(function (){
+            $("#select-groups-btn").click(function (){
                 $toponymsList.hide('slide', { direction: "left" });
                 $groupsList.show('slide',{ direction: "right" });
+            });
+            
+            VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
+                for (var i in loadedToponymObjects) {
+                    var toponym = loadedToponymObjects[i];
+                    $toponymsList.append("<li id =\"" + toponym.toponymNo + "\" class=\"ui-widget-content\">" + toponym.name + "</li>");
+                }
+                $("#select-toponyms-btn").removeAttr("disabled");
+                $(".nano").nanoScroller();
+            });
+            
+            VIZAPP.dataInterface.getAllFormants(function(loadedFormants) {
+                for (var i in loadedFormants) {
+                    var formant = loadedFormants[i];
+                    $groupsList.append("<li id =\"" + formant.formantNo + "\" class=\"ui-widget-content\">" + formant.formantName + "</li>");
+                }
+                $("#select-groups-btn").removeAttr("disabled");
+                $(".nano").nanoScroller();
             });
             
             $toponymsList.on( "selectablestop", function( event, ui ) {

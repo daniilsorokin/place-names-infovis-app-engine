@@ -35,6 +35,10 @@ div.mousescroll {
     text-align: center;
 }
 
+.nano { height: 100%; width:100%}
+.nano .pane   { background: #888; }
+.nano .slider { background: #111; }
+
 .list { 
     list-style-type: none; 
     margin: 0px; 

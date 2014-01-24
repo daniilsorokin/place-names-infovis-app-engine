@@ -11,6 +11,7 @@
         <script type="text/javascript" src="javascript/data_interface.js"></script>
         <script type="text/javascript" src="javascript/gui.js"></script>
         <script type="text/javascript" src="javascript/colors.js"></script>
+        <script type="text/javascript" src="javascript/jquery.nanoscroller.min.js"></script>
         <script type="text/javascript">
             $( document ).ready( function() {
                 VIZAPP.initialize();
@@ -18,26 +19,27 @@
         </script>
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/nanoscroller.css">
         <link rel="stylesheet" href="css/viswebproject.css">
     </head>
     <body>
         <table id="page-structure" class="page-structure">
             <tr><td id="list-selector-container" style="width: 20%;">
                         <div id="list-selector" class="btn-group btn-group-sm">
-                            <button id="list-toponyms" type="button" class="btn btn-default" disabled>Toponyms</button>
-                            <button id="list-groups" type="button" class="btn btn-default" disabled>Groups</button>
+                            <button id="select-toponyms-btn" type="button" class="btn btn-default" disabled>Toponyms</button>
+                            <button id="select-groups-btn" type="button" class="btn btn-default" disabled>Groups</button>
                         </div>
                 </td>
                 <td style="width:80%;" rowspan="2"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
             <tr><td>
-                    <div class="mousescroll">
+                <div class="nano">
+                    <div class="content">
                         <button id="deselect-button" class="btn btn-default btn-sm">Deselect all</button>
-                        <ul id="toponyms-list" class="list">
-                        </ul>
-                        <ul id="groups-list" class="list">
-                        </ul>
+                        <ul id="toponyms-list" class="list"></ul>
+                        <ul id="groups-list" class="list"></ul>
                     </div>
-                </td></tr>
+                </div>
+            </td></tr>
         </table>
     </body>
 </html>
