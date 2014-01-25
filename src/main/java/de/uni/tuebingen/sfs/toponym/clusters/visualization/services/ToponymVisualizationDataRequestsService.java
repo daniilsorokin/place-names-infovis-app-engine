@@ -10,11 +10,11 @@ import javax.ws.rs.core.Application;
  *
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
-@ApplicationPath("visualization")
-public class ToponymCustersVisualizationService extends Application {
-    private ImmutableSet<Object> singletons = ImmutableSet.of(new ToponymClustersVisualizationREST(), 
-                                                              new ToponymObjectFacadeREST(),
-                                                              new FormantFacadeREST());
+@ApplicationPath("request")
+public class ToponymVisualizationDataRequestsService extends Application {
+    private ImmutableSet<Object> singletons = ImmutableSet.<Object>of(
+                                                                new ToponymObjectFacadeREST(),
+                                                                new FormantFacadeREST());
     
     @Override
     public Set<Object> getSingletons (){

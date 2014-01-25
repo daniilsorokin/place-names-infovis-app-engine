@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -52,22 +47,17 @@ public class Language implements Serializable {
     @OneToMany(mappedBy = "language")
     private List<ToponymObject> toponymObjectList;
 
-    public Language() {
+    protected Language() {
     }
 
-    public Language(Integer languageNo) {
-        this.languageNo = languageNo;
-    }
-
-    public Language(Integer languageNo, String name) {
-        this.languageNo = languageNo;
+    public Language(String name) {
         this.name = name;
     }
 
     public Integer getLanguageNo() {
         return languageNo;
     }
-
+    
     public void setLanguageNo(Integer languageNo) {
         this.languageNo = languageNo;
     }
@@ -107,7 +97,6 @@ public class Language implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Language)) {
             return false;
         }
@@ -120,7 +109,7 @@ public class Language implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Language[ languageNo=" + languageNo + " ]";
+        return "Language[ languageNo=" + languageNo + " language=" + name + " ]";
     }
 
 }

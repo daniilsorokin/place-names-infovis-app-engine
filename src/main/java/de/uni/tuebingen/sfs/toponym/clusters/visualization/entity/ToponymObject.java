@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -21,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -53,8 +49,12 @@ public class ToponymObject implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "other_names")
     private String otherNames;
+    @Column(name = "english_transliteration")
+    private String englishTransliteration;    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "latitude")
     private Double latitude;
+    @Column(name = "longitude")
     private Double longitude;
     @ManyToMany(mappedBy = "toponymObjectList")
     private List<Affix> affixList;
@@ -71,15 +71,10 @@ public class ToponymObject implements Serializable {
     @ManyToOne
     private Dataset dataset;
 
-    public ToponymObject() {
+    protected ToponymObject() {
     }
 
-    public ToponymObject(Integer toponymNo) {
-        this.toponymNo = toponymNo;
-    }
-
-    public ToponymObject(Integer toponymNo, String name) {
-        this.toponymNo = toponymNo;
+    public ToponymObject(String name) {
         this.name = name;
     }
 
@@ -149,6 +144,14 @@ public class ToponymObject implements Serializable {
         this.language = language;
     }
 
+    public String getEnglishTransliteration() {
+        return englishTransliteration;
+    }
+
+    public void setEnglishTransliteration(String englishTransliteration) {
+        this.englishTransliteration = englishTransliteration;
+    }    
+    
     public Formant getFormant() {
         return formant;
     }
@@ -174,7 +177,6 @@ public class ToponymObject implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ToponymObject)) {
             return false;
         }
@@ -187,7 +189,7 @@ public class ToponymObject implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject[ toponymNo=" + toponymNo + " ]";
+        return "ToponymObject[ toponymNo=" + toponymNo + "  name=" + name + " ]";
     }
 
 }

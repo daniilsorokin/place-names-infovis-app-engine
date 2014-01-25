@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -128,7 +123,7 @@ public class Affix implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Affix[ affixNo=" + affixNo + " ]";
+        return "Affix[ affixNo=" + affixNo + "  affix=" + affix + " ]";
     }
 
 }

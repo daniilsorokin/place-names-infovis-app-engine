@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -52,15 +47,10 @@ public class Formant implements Serializable {
     @OneToMany(mappedBy = "formant")
     private List<ToponymObject> toponymObjectList;
 
-    public Formant() {
+    protected Formant() {
     }
 
-    public Formant(Integer formantNo) {
-        this.formantNo = formantNo;
-    }
-
-    public Formant(Integer formantNo, String formantName) {
-        this.formantNo = formantNo;
+    public Formant(String formantName) {
         this.formantName = formantName;
     }
 
@@ -109,7 +99,6 @@ public class Formant implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Formant)) {
             return false;
         }
@@ -122,7 +111,7 @@ public class Formant implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant[ formantNo=" + formantNo + " ]";
+        return "Formant[ formantNo=" + formantNo + "  name=" + formantName + " ]";
     }
 
 }

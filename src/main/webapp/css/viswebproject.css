@@ -35,6 +35,10 @@ div.mousescroll {
     text-align: center;
 }
 
+.nano { height: 100%; width:100%}
+.nano .pane   { background: #888; }
+.nano .slider { background: #111; }
+
 .list { 
     list-style-type: none; 
     margin: 0px; 
@@ -47,16 +51,10 @@ div.mousescroll {
     margin: 3px; 
     padding: 0.4em; 
     font-size: 10pt; 
-    height: 14px; }
-.list .ui-selecting { border-color: #FECA40; }
-.list .ui-selected { background: #F39814; color: white; }
+    height: 20pt; }
+.list .ui-selecting { border-color: #0066CC; }
+.list .ui-selected { background: #0066CC; color: white; }
 
-.ui-button {
-    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
-    font-size: 62.5%; }
-
-.ui-button-text.custom-button-text{
-    padding: 1px; }
 .list-selector-button.ui-state-active {
     font-weight: bold;
     padding: 1px;
@@ -69,8 +67,8 @@ div.mousescroll {
 /* particular elements (based on id) */
 #deselect-button {
     width: 97%;
-    margin: 1px;
-    padding: 0px;
+    margin: 2px;
+    padding: 1px;
 }
 
 
@@ -82,7 +80,9 @@ td#list-selector-container {
 
 div#list-selector{
     margin: 0px 0px; 
-    padding: 2px 0px 4px 0px;
+    padding: 3px 5px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 

@@ -11,11 +11,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,33 +30,11 @@ public class ToponymObjectFacadeREST extends AbstractFacade<ToponymObject> {
     public ToponymObjectFacadeREST() {
         super(ToponymObject.class);
         try {
-            // Initialize class
             Class.forName("org.postgresql.Driver");
-            // Create an Entity manager
             em = Persistence.createEntityManagerFactory("de.uni.tuebingen.sfs_toponym-clusters-visualization_war_2.0PU").createEntityManager();
         }  catch (ClassNotFoundException ex) {
             Logger.getLogger(ToponymObjectFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    @POST
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void create(ToponymObject entity) {
-        super.create(entity);
-    }
-
-    @PUT
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void edit(ToponymObject entity) {
-        super.edit(entity);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
     }
 
     @GET
@@ -83,18 +57,16 @@ public class ToponymObjectFacadeREST extends AbstractFacade<ToponymObject> {
     
     @GET
     @Override
-    @Path("all")
     @Produces({"application/xml", "application/json"})
     public List<ToponymObject> findAll() {
         return super.findAll();
     }
-
+    
     @GET
-    @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
-    public List<ToponymObject> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
+    @Path("name/{id}")
+    public String findName(@PathParam("id") Integer id) {
+        return super.find(id).getEnglishTransliteration();
+    }   
 
     @GET
     @Path("count")

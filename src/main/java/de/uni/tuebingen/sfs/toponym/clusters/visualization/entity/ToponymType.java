@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
@@ -52,15 +47,10 @@ public class ToponymType implements Serializable {
     @OneToMany(mappedBy = "type")
     private List<ToponymObject> toponymObjectList;
 
-    public ToponymType() {
+    protected ToponymType() {
     }
 
-    public ToponymType(Integer typeNo) {
-        this.typeNo = typeNo;
-    }
-
-    public ToponymType(Integer typeNo, String name) {
-        this.typeNo = typeNo;
+    public ToponymType(String name) {
         this.name = name;
     }
 
@@ -75,7 +65,7 @@ public class ToponymType implements Serializable {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -93,7 +83,7 @@ public class ToponymType implements Serializable {
     public List<ToponymObject> getToponymObjectList() {
         return toponymObjectList;
     }
-
+    
     public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
         this.toponymObjectList = toponymObjectList;
     }
@@ -107,7 +97,6 @@ public class ToponymType implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ToponymType)) {
             return false;
         }
@@ -120,7 +109,7 @@ public class ToponymType implements Serializable {
 
     @Override
     public String toString() {
-        return "de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymType[ typeNo=" + typeNo + " ]";
+        return "ToponymType[ typeNo=" + typeNo + "  name=" + name + " ]";
     }
 
 }
