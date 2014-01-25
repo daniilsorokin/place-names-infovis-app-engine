@@ -26,16 +26,18 @@ VIZAPP.gui = function () {
             
             $(".list").selectable();
             
-            $toponymsList.show();
-            $groupsList.hide();
+            $("#toponyms-list-container").show();
+            $("#groups-list-container").hide();
             
             $("#select-toponyms-btn").click(function (){
-                $groupsList.hide('slide', { direction: "right" });
-                $toponymsList.show('slide',{ direction: "left" });
+                $("#toponyms-list-container").show('slide',{ direction: "left" });
+                $("#groups-list-container").hide('slide', { direction: "right" });
+                $(".nano").nanoScroller();
             });
             $("#select-groups-btn").click(function (){
-                $toponymsList.hide('slide', { direction: "left" });
-                $groupsList.show('slide',{ direction: "right" });
+                $("#groups-list-container").show('slide',{ direction: "right" });
+                $("#toponyms-list-container").hide('slide', { direction: "left" });
+                $(".nano").nanoScroller();
             });
             
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
