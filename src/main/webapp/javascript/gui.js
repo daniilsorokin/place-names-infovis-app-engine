@@ -106,10 +106,12 @@ VIZAPP.gui = function () {
             $("#select-toponyms-btn").click(function (){
                 $groupsList.hide('slide', { direction: "right" });
                 $toponymsList.show('slide',{ direction: "left" });
+                $(".nano").nanoScroller();
             });
             $("#select-groups-btn").click(function (){
                 $toponymsList.hide('slide', { direction: "left" });
                 $groupsList.show('slide',{ direction: "right" });
+                $(".nano").nanoScroller();
             });
             
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
@@ -146,6 +148,25 @@ VIZAPP.gui = function () {
                     }
                 });
             });
+            
+            $toponymsList.on( "selectableunselected", function( event, ui ) {
+//                $(".ui-selected", $groupsList).each(function(){
+//                                        //It is not the best solution, but we can't for now put into jquery because of some strange group names.
+//                                        if ($(this).attr("id") == toponymIdToGroupName[ui.unselected.id]){
+//                                            $(this).removeClass("ui-selected")
+//                                                   .css({ background: "#FFFFFF" });
+//                                          if (groupIdToPolygon[$(this).attr("id")] != null)
+//                                               groupIdToPolygon[$(this).attr("id")].setMap(null);
+//                                          groupIdToPolygon[$(this).attr("id")] = null;
+//                                        }
+//                                      });
+                                      
+//                $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
+                VIZAPP.myMap.hideMarker({toponymNo: ui.unselected.id});
+//                    
+//                if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
+//                toponymIdToMarker[ui.unselected.id] = null;
+            } );
 
         }
     };
