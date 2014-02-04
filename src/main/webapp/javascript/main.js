@@ -1,6 +1,5 @@
 var VIZAPP = new Object();
 
-
 var toponymIdToMarker = {};
 var groupIdToPolygon = {};
 var groupNameToColor = {};

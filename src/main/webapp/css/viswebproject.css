@@ -60,17 +60,20 @@ div.mousescroll {
     padding: 1px;
 }
 
+.list-selector-button{
+    min-width: 100px; 
+}
+
 /* particular elements (based on id) */
 #deselect-button {
-    width: 97%;
-    margin: 2px;
-    padding: 1px;
+    margin: 3px;
+    padding: 1px 3px;
 }
 
 
 td#list-selector-container { 
-    height: 18px;
-    border-bottom: 1px solid #c9c9fd;
+    height: 10px;
+    border-bottom: 1px solid rgb(178, 178, 178);
     text-align: center;
 }
 
@@ -81,5 +84,26 @@ div#list-selector{
     vertical-align: middle;
 }
 
+.list-container {
+      height   : 100%;
+}
 
+.list-control-panel {
+    width: 100%;
+    
+    border-bottom: 1px solid #cecece;
+    
+    text-align:center;
+    vertical-align:middle;
+        
+}
 
+.control-panel-container {
+    height: 10px
+}
+
+.list-holder {
+    height: 100%;
+    width: auto
+    position:absolute;
+}
