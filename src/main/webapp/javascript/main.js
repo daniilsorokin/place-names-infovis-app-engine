@@ -60,19 +60,6 @@ VIZAPP.initialize = function()
 //    });
 
 //    
-//    $("#deselect-button").button()
-//                          .click(function(){
-////                                $toponymsList.trigger("click");
-//                                if (!$toponymsList.isHidden()) 
-//                                    $(".ui-selected", $toponymsList).each(function(){
-//                                        $(this).trigger("selectableunselected", {unselected: this});
-//                                    });
-//                                else if (!$groupsList.isHidden())
-//                                    $(".ui-selected", $groupsList).each(function(){
-//                                        $(this).trigger("selectableunselected", {unselected: this});
-//                                    });
-//                          });
-//    $("#deselect-button span.ui-button-text").addClass("custom-button-text");
 }
 
 /**
@@ -133,24 +120,4 @@ function placeNewPolygon (groupName, polygonsCoordinatesList, color){
 }
 
 
-// Additional JQuery obejct methods
-(function( $ ) {
-    /**
-     * 
-     * @param {type} data
-     */
-    $.fn.fillWith = function(data){
-        for (idx in data)
-        {
-            this.append("<li id =\"" + idx + "\" class=\"ui-widget-content\">" + data[idx] + "</li>");
-        }
-    };
-    
-    /**
-     * 
-     * @returns {Boolean}
-     */
-    $.fn.isHidden = function(){
-        return this.css('display') == 'none';
-    };
-})(jQuery);
+

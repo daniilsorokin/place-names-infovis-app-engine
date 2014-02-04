@@ -161,13 +161,35 @@ VIZAPP.gui = function () {
 //                                        }
 //                                      });
                                       
-//                $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
+                $(ui.unselected).removeClass("ui-selected");
                 VIZAPP.myMap.hideMarker({toponymNo: ui.unselected.id});
 //                    
 //                if (toponymIdToMarker[ui.unselected.id] != null) toponymIdToMarker[ui.unselected.id].setMap(null);
 //                toponymIdToMarker[ui.unselected.id] = null;
             } );
-
+            
+            $("#deselect-button").button().click(function() {
+                if (!$toponymsList.isHidden()) {
+                    $(".ui-selected", $toponymsList).each(function(){
+                        $(this).trigger("selectableunselected", {unselected: this});
+                    });  
+                } else if (!$groupsList.isHidden()) {
+                    $(".ui-selected", $groupsList).each(function(){
+                        $(this).trigger("selectableunselected", {unselected: this});
+                    });
+                }
+            });
         }
     };
 }();
+
+
+(function( $ ) {
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    $.fn.isHidden = function(){
+        return this.css('display') == 'none';
+    };
+})(jQuery);
