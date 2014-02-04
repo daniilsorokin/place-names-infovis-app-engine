@@ -117,19 +117,6 @@ VIZAPP.initialize = function()
 //    $("#deselect-button span.ui-button-text").addClass("custom-button-text");
 }
 
-function placeNewMarker(id, coordinates, title){
-    if (toponymIdToMarker[id] == null){
-        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
-        var marker = new google.maps.Marker({
-            position: latlng,
-            map: myMap,
-            title: title
-        });
-        //To Do: Maybe another way to store markers. I am not sure about Javascript handles the memory.
-        toponymIdToMarker[id] = marker;
-    }
-}
-
 /**
  * Places a marker on the map and stores it for later reference.
  * 
