@@ -1,6 +1,8 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.resources;
 
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
+import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant_;
+import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,10 +10,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  *
@@ -40,6 +45,27 @@ public class FormantFacadeREST extends AbstractFacade<Formant> {
         return super.find(id);
     }
 
+    @GET
+    @Path("{id}/toponyms")
+    @Produces({"application/xml", "application/json"})
+    public List<ToponymObject> findToponyms(@PathParam("id") Integer id) {
+        Formant formant = super.find(id);
+        return formant.getToponymObjectList();
+    }
+    
+    @GET
+    @Path("set")
+    @Produces({"application/xml", "application/json"})
+    public List<Formant> findSet(@QueryParam("id[]") List<Integer> ids) {
+        CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        Root<Formant> root = cq.from(Formant.class);
+        cq.where(root.get(Formant_.formantNo).in(ids));
+        cq.select(root);
+        return getEntityManager().createQuery(cq).getResultList();
+    }    
+
+    
+    
     @GET
     @Override
     @Produces({"application/xml", "application/json"})

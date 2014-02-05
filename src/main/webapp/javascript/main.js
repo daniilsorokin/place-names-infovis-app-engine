@@ -11,53 +11,9 @@ VIZAPP.initialize = function()
     VIZAPP.gui.init();
 //    colorGeneratorInstance = new colorGenerator();
 //    
-//    $groupsList.on( "selectablestop", function( event, ui ) {
-//        //$(".ui-selected", $toponymsList).removeClass("ui-selected");
-//        $(".ui-selected" , this).each(function() {
-//            var groupName = $(this).attr("id");
-//            if (groupNameToColor[groupName] == null)
-//                groupNameToColor[groupName] = colorGeneratorInstance.generateNextColor();
-//            $(this).css({ background: groupNameToColor[groupName] });
-//            
-//            $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
-//                data: {group_name: groupName},
-//                success: function(toponymsList) {
-//                    for(var toponymIdx in toponymsList){
-//                        var toponym = toponymsList[toponymIdx];
-//                        placeNewMarker(toponym.id, {lat: toponym.latitude, lng: toponym.longitude}, 
-//                                        groupNameToColor[groupName], toponym.name);
-//                        $("#"+toponym.id, $toponymsList).addClass("ui-selected")
-//                                                        .css({ background: groupNameToColor[groupName] });
-//                    }
-//                }
-//            });
-//            $.ajax({url: "getPolygons", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
-//                data: {group_name: groupName},
-//                success: function(polygonsCoordinatesList) {
-//                    placeNewPolygon(groupName, polygonsCoordinatesList, groupNameToColor[groupName]);
-//                }
-//            });
-//        });        
-//    });
+
 //    
-//    $groupsList.on( "selectableunselected", function( event, ui ) {
-//        $(ui.unselected).removeClass("ui-selected").css({ background: "#FFFFFF" });
-//        if (groupIdToPolygon[ui.unselected.id] != null)
-//             groupIdToPolygon[ui.unselected.id].setMap(null);
-//        groupIdToPolygon[ui.unselected.id] = null;
-//        $.ajax({url: "getToponyms", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
-//                data: {group_name: ui.unselected.id},
-//                success: function(toponymsList) {
-//                    for(var toponymIdx in toponymsList){
-//                        var toponym = toponymsList[toponymIdx];
-//                        if (toponymIdToMarker[toponym.id] != null) toponymIdToMarker[toponym.id].setMap(null);
-//                        toponymIdToMarker[toponym.id] = null;
-//                        $("#"+toponym.id, $toponymsList).removeClass("ui-selected")
-//                                                        .css({ background: "#FFFFFF" });
-//                    }
-//                }
-//            });
-//    });
+
 
 //    
 }

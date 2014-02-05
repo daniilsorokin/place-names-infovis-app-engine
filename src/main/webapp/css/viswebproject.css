@@ -55,19 +55,12 @@ div.mousescroll {
 .list .ui-selecting { border-color: #0066CC; }
 .list .ui-selected { background: #0066CC; color: white; }
 
-.list-selector-button.ui-state-active {
-    font-weight: bold;
-    padding: 1px;
-}
-
-.list-selector-button{
-    min-width: 100px; 
-}
 
 /* particular elements (based on id) */
 #deselect-button {
     margin: 3px;
-    padding: 1px 3px;
+    padding: 8px 8px;
+    border: 1px solid rgb(145, 201, 255);
 }
 
 
