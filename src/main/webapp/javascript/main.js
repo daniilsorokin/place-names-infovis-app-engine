@@ -9,13 +9,6 @@ VIZAPP.initialize = function()
 {	    
     $.ajaxSetup({ scriptCharset: "utf-8" , contentType: "application/json; charset=utf-8"});
     VIZAPP.gui.init();
-//    colorGeneratorInstance = new colorGenerator();
-//    
-
-//    
-
-
-//    
 }
 
 /**

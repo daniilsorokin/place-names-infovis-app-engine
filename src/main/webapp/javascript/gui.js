@@ -248,11 +248,11 @@ VIZAPP.gui = function () {
             });            
             
             $("#deselect-button").button().click(function() {
-                if (!$toponymsList.isHidden()) {
+                if (!$("#toponyms-list-container").isHidden()) {
                     $(".ui-selected", $toponymsList).each(function(){
                         $(this).trigger("selectableunselected", {unselected: this});
                     });  
-                } else if (!$groupsList.isHidden()) {
+                } else if (!$("#groups-list-container").isHidden()) {
                     $(".ui-selected", $groupsList).each(function(){
                         $(this).trigger("selectableunselected", {unselected: this});
                     });
