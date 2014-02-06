@@ -12,33 +12,6 @@ VIZAPP.initialize = function()
 }
 
 /**
- * Places a marker on the map and stores it for later reference.
- * 
- * @param {int} id marker's id.
- * @param {lat: latitude, lng: longitude} coordinates
- * @param {type} color
- * @param {string} title
- */
-function placeNewMarker (id, coordinates, color, title){
-    if (toponymIdToMarker[id] == null){
-        var opacity = 1.0;
-        var radius = 1000; 
-        var latlng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
-        var circleOptions = {
-            strokeWeight: 0,
-            fillColor: color,
-            fillOpacity: opacity,
-            map: myMap,
-            center: latlng,
-            title: title,
-            radius: radius
-        };
-        circle = new google.maps.Circle(circleOptions);
-        toponymIdToMarker[id] = circle;
-    }  
-}
-
-/**
  * Places a new polygon on a map and stores it for later reference.
  * 
  * @param {type} groupName
