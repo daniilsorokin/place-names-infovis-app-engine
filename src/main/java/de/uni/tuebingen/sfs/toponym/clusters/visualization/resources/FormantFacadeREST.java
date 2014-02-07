@@ -3,6 +3,7 @@ package de.uni.tuebingen.sfs.toponym.clusters.visualization.resources;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant_;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +18,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import org.codehaus.jettison.json.JSONArray;
 
 /**
  *
@@ -51,6 +55,18 @@ public class FormantFacadeREST extends AbstractFacade<Formant> {
     public List<ToponymObject> findToponyms(@PathParam("id") Integer id) {
         Formant formant = super.find(id);
         return formant.getToponymObjectList();
+    }
+
+    @GET
+    @Path("{id}/toponyms/ids")
+    @Produces("application/json")
+    public JSONArray findToponymIds(@PathParam("id") Integer id) {
+        Formant formant = super.find(id);
+        List<Integer> ids = new ArrayList<>();
+        for (ToponymObject toponymObject : formant.getToponymObjectList()) {
+            ids.add(toponymObject.getToponymNo());
+        }
+        return new JSONArray(ids);
     }
     
     @GET
