@@ -95,7 +95,6 @@ VIZAPP.myMap = function () {
                     fillOpacity: opacity,
                     map: map,
                     center: latlng,
-    //                title: title,
                     radius: radius
                 };
                 var marker = new google.maps.Circle(circleOptions);
@@ -243,16 +242,9 @@ VIZAPP.gui = function () {
             });
             
             $toponymsList.on( "selectablestop", function( event, ui ) {
-                var ids = new Array();
                 $(".ui-selected" , this).each(function() { 
-//                    ids.push($(this).attr('id')); 
                     selectToponym($(this));
                 });
-//                VIZAPP.dataInterface.getToponymsSet(ids, function(toponyms) {
-//                    for(var idx in toponyms) {
-//                        selectToponym(toponyms[idx]);
-//                    }
-//                });
             });
             
             $groupsList.on( "selectablestop", function( event, ui ) {
