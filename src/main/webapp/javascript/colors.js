@@ -1,6 +1,6 @@
 /*
  * A set of functions to work with color.
- * @author Daniil Sorokin <daniil.sorokin@student.uni-tuebingen.de>
+ * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 
 /* Static methods definitions */
@@ -195,7 +195,7 @@ function makeColorGradient(frequency1, frequency2, frequency3,
  * @param {type} phase3
  * @returns {colorGenerator}
  */
-function colorGenerator(frequency1, frequency2, frequency3,
+function ColorGenerator(frequency1, frequency2, frequency3,
                             phase1, phase2, phase3)
 {
     this.center = 128;
@@ -213,7 +213,7 @@ function colorGenerator(frequency1, frequency2, frequency3,
  * 
  * @returns {String}
  */
-colorGenerator.prototype.generateNextColor = function (){
+ColorGenerator.prototype.generateNextColor = function (){
     var red = Math.sin(this.redfrequency*this.iteration + this.phase1) * this.width + this.center;
     var grn = Math.sin(this.grnfrequency*this.iteration + this.phase2) * this.width + this.center;
     var blu = Math.sin(this.blufrequency*this.iteration + this.phase3) * this.width + this.center;

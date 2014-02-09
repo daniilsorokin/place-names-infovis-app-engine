@@ -8,8 +8,8 @@
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="javascript/main.js"></script>
-        <script type="text/javascript" src="javascript/gui.js"></script>
         <script type="text/javascript" src="javascript/colors.js"></script>
+        <script type="text/javascript" src="javascript/gui.js"></script>
         <script type="text/javascript" src="vendor/nanoscroller/jquery.nanoscroller.min.js"></script>
         <script type="text/javascript">
             $( document ).ready( function() {
@@ -23,22 +23,22 @@
     </head>
     <body>
         <table id="page-structure" class="page-structure">
-            <tr><td id="list-selector-container" style="width: 20%;">
+            <tr><td id="list-selector-container" class="left-column-element">
                         <div id="list-selector" class="btn-group btn-group-sm">
                             <button id="select-toponyms-btn" type="button" class="btn btn-primary" disabled>Toponyms</button>
                             <button id="select-groups-btn" type="button" class="btn btn-primary" disabled>Groups</button>
                         </div>
                 </td>
-                <td style="width:80%;" rowspan="3"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
+                <td rowspan="3"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
             <tr>
-                <td class="control-panel-container">
+                <td class="left-column-element control-panel-container">
                     <div class="list-control-panel">
                         <button id="deselect-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-ban-circle" disabled></span></button>
                     </div>
                 </td>
             </tr>    
             <tr>
-                <td class="list-container">
+                <td class="left-column-element list-container">
                     <div id="toponyms-list-container" class="list-holder">
                         <div class="nano">
                             <div class="content">

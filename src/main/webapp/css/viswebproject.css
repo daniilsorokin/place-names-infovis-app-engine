@@ -99,3 +99,7 @@ div#list-selector{
     height: 100%;
     width: auto;
 }
+
+.left-column-element {
+    width: 250px;
+}
