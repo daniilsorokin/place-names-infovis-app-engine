@@ -109,9 +109,7 @@ VIZAPP.myMap = function () {
 }();
 
 VIZAPP.gui = function () {
-
     var colorGenerator = new ColorGenerator();
-
     var $activeList = undefined;
 
     var deselectAllInActiveList = function() {
