@@ -165,8 +165,10 @@ VIZAPP.gui = function () {
         var cooridnates = new Array();
         VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
             for(var idx in toponymIds) {
-                $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
-                cooridnates.push([$toponym.data("toponym-object").latitude, $toponym.data("toponym-object").longitude]);
+                var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
+                var toponym =  $toponym.data("toponym-object");
+                if (toponym.latitude != "0.0")
+                    cooridnates.push([$toponym.data("toponym-object").latitude, $toponym.data("toponym-object").longitude]);
                 selectToponym($toponym);
                 $toponym.addClass("ui-selected");
             }
