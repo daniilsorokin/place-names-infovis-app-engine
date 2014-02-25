@@ -11,7 +11,7 @@ VIZAPP.dummies = function() {
 
 VIZAPP.dataInterface = function () {
     var type = "real"; 
-
+    
     return {
         getAllToponyms: function (doWithToponyms){
             if (type == "dummy") {
@@ -59,7 +59,7 @@ VIZAPP.dataInterface = function () {
                 doWithResults(data);
             });
         }
-
+        
     };
 }();
 
@@ -74,9 +74,10 @@ VIZAPP.myMap = function () {
         overviewMapControl: true,					
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
-
+    
     var markers = {}
-
+    var polygons = {}
+    
     return {
         init: function() {
             google.maps.visualRefresh = true;
@@ -84,6 +85,7 @@ VIZAPP.myMap = function () {
             map.setCenter(VIZAPP.databases[0].startPoint);
             map.setZoom(VIZAPP.databases[0].startZoom);
         },
+        
         placeMarker: function(toponym, color) {
             if (markers[toponym.toponymNo] === undefined) {
                 var opacity = 1.0;
@@ -93,7 +95,7 @@ VIZAPP.myMap = function () {
                     strokeWeight: 0,
                     fillColor: color, //"#0066CC"
                     fillOpacity: opacity,
-                    map: map,
+                    map: null,
                     center: latlng,
                     radius: radius
                 };
@@ -102,49 +104,77 @@ VIZAPP.myMap = function () {
             }
             markers[toponym.toponymNo].setMap(map);
         },
+        
         hideMarker: function (toponym) {
             markers[toponym.toponymNo].setMap(null)
-        }
+        },
+        
+        placePolygon: function (formant, clusters, color){
+            if (polygons[formant.formantNo] === undefined) {
+                for (var i in clusters) {
+                    for (var j in clusters[i]) {
+                        clusters[i][j] = new google.maps.LatLng(clusters[i][j][0], clusters[i][j][1]);
+                    }
+                }
+                var polygonOptions = {
+                    paths: clusters,
+                    clickable: false,
+                    strokeColor: color,
+                    strokeOpacity: 0.5,
+                    strokeWeight: 2,
+                    fillColor: color,
+                    map: null,
+                    fillOpacity: 0.2};
+                var polygon = new google.maps.Polygon(polygonOptions);
+                polygons[formant.formantNo] = polygon;
+            }
+            polygons[formant.formantNo].setMap(map);
+        },
+        
+        hidePolygon:  function (formant) {
+            polygons[formant.formantNo].setMap(null)
+        },
     };
 }();
 
 VIZAPP.gui = function () {
     var colorGenerator = new ColorGenerator(2.4,2.4,2.4,0,2,4);
     var $activeList = undefined;
-
+    
+    var convertClusters = function(){}
+    var computeClusters = function(){}
+    
     var deselectAllInActiveList = function() {
         $(".ui-selected", $activeList).each(function(){
             $(this).removeClass("ui-selected");
             $(this).trigger("selectableunselected", {unselected: this});
         });
     };
-
+    
     var selectToponym = function($toponym) {
         var toponym = $toponym.data("toponym-object");
         var color = $("#"+$toponym.data("formant-id"), $("#groups-list")).data("formant-color");
         VIZAPP.myMap.placeMarker(toponym, color);
         $toponym.css({ background: color });
     };
-
+    
     var selectFormant = function($formant) {
         var color = $formant.data("formant-color");
         $formant.css({ background: color });
         //  Fix here! can be done without repeating queries
+        var cooridnates = new Array();
         VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
             for(var idx in toponymIds) {
                 $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
+                cooridnates.push([$toponym.data("toponym-object").latitude, $toponym.data("toponym-object").longitude]);
                 selectToponym($toponym);
                 $toponym.addClass("ui-selected");
             }
+            cooridnates = d3.geom.hull(cooridnates);
+            VIZAPP.myMap.placePolygon($formant.data("formant-object"), [cooridnates], color);
         });
-        //                    $.ajax({url: "getPolygons", contentType: "application/x-www-form-urlencoded", dataType: "json", type: "POST",
-        //                        data: {group_name: groupName},
-        //                        success: function(polygonsCoordinatesList) {
-        //                            placeNewPolygon(groupName, polygonsCoordinatesList, groupNameToColor[groupName]);
-        //                        }
-        //                    });        
     };
-
+    
     var deselectToponym = function($toponym) {
         //                $(".ui-selected", $groupsList).each(function(){
         //                                        //It is not the best solution, but we can't for now put into jquery because of some strange group names.
@@ -159,17 +189,20 @@ VIZAPP.gui = function () {
         $toponym.css({ background: "#FFFFFF" });          
         VIZAPP.myMap.hideMarker($toponym.data("toponym-object"));
     };
-
+    
     var updateFormantState = function ($toponym) {
-        $("#"+ $toponym.data("formant-id"), $("#groups-list")).removeClass("ui-selected")
-                                                              .css({ background: "#FFFFFF" });
+        $formant = $("#"+ $toponym.data("formant-id"), $("#groups-list"));
+        $formant.removeClass("ui-selected")
+                .css({ background: "#FFFFFF" });
+        VIZAPP.myMap.hidePolygon($formant.data("formant-object"));
     }
-
+    
     var deselectFormant = function($formant) {
         //                if (groupIdToPolygon[ui.unselected.id] != null)
         //                     groupIdToPolygon[ui.unselected.id].setMap(null);
         //                groupIdToPolygon[ui.unselected.id] = null;
         $formant.css({ background: "#FFFFFF" });
+        VIZAPP.myMap.hidePolygon($formant.data("formant-object"));
         VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
             for(var idx in toponymIds) {
                 $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
@@ -178,21 +211,21 @@ VIZAPP.gui = function () {
             }
         });
     };
-
+    
     return {
         init: function () {
             VIZAPP.myMap.init();
-
+            
             var $toponymsList = $("#toponyms-list");
             var $groupsList = $("#groups-list");
-
+            
             $(".list").selectable();
             $("#toponyms-list-container").show();
             $("#groups-list-container").hide();
             $activeList = $toponymsList;
             $("#deselect-button").button().click(deselectAllInActiveList);
             $("#deselect-button").prop("disabled", false);
-
+            
             $("#select-toponyms-btn").click(function (){
                 $activeList = $toponymsList;
                 $("#toponyms-list-container").show('slide',{ direction: "left" });
@@ -205,7 +238,7 @@ VIZAPP.gui = function () {
                 $("#toponyms-list-container").hide('slide', { direction: "left" });
                 $(".nano").nanoScroller();
             });
-
+            
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
                     var toponym = loadedToponymObjects[i];
@@ -219,7 +252,7 @@ VIZAPP.gui = function () {
                 $("#select-toponyms-btn").prop("disabled", false);
                 $(".nano").nanoScroller();
             });
-
+            
             VIZAPP.dataInterface.getAllFormants(function(loadedFormants) {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
@@ -234,24 +267,24 @@ VIZAPP.gui = function () {
                 $("#select-groups-btn").prop("disabled", false);
                 $(".nano").nanoScroller();
             });
-
+            
             $toponymsList.on( "selectablestop", function( event, ui ) {
                 $(".ui-selected" , this).each(function() { 
                     selectToponym($(this));
                 });
             });
-
+            
             $groupsList.on( "selectablestop", function( event, ui ) {
                 $(".ui-selected" , this).each(function() {
                     selectFormant($(this));
                 });        
             });            
-
+            
             $toponymsList.on( "selectableunselected", function( event, ui ) {
                 deselectToponym($(ui.unselected));
                 updateFormantState($(ui.unselected));
             } );
-
+            
             $groupsList.on( "selectableunselected", function( event, ui ) {
                 deselectFormant($(ui.unselected));
             });                        
