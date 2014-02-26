@@ -139,10 +139,32 @@ VIZAPP.myMap = function () {
 
 VIZAPP.gui = function () {
     var colorGenerator = new ColorGenerator(2.4,2.4,2.4,0,2,4);
+    var kmeans = new KMeans();
     var $activeList = undefined;
     
     var convertClusters = function(){}
-    var computeClusters = function(){}
+    var computeClusters = function(items, callback) {
+        kmeans.reset();
+        kmeans.setPoints(items);
+        kmeans.guessK();
+        kmeans.initCentroids();
+        
+        kmeans.cluster(function(){
+            var clusters = new Array();
+            for (var i = 0; i < kmeans.points.length; i++) {
+                console.log(kmeans.points[i]);
+                if (clusters[kmeans.points[i].centroid] === undefined) clusters[kmeans.points[i].centroid] = [];
+                if (!kmeans.points[i].items) clusters[kmeans.points[i].centroid].push(kmeans.points[i]);
+            }
+            console.log(clusters);
+            for (var i in clusters) {
+                for (var j in clusters[i]) {
+                    clusters[i][j] = [clusters[i][j].x, clusters[i][j].y];
+                }
+            }
+            callback(clusters);
+        });
+    }
     
     var deselectAllInActiveList = function() {
         $(".ui-selected", $activeList).each(function(){
@@ -162,32 +184,27 @@ VIZAPP.gui = function () {
         var color = $formant.data("formant-color");
         $formant.css({ background: color });
         //  Fix here! can be done without repeating queries
-        var cooridnates = new Array();
         VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
+            var coordinates = new Array();
             for(var idx in toponymIds) {
                 var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
                 var toponym =  $toponym.data("toponym-object");
                 if (toponym.latitude != "0.0")
-                    cooridnates.push([$toponym.data("toponym-object").latitude, $toponym.data("toponym-object").longitude]);
+                    coordinates.push({x:$toponym.data("toponym-object").latitude, y:$toponym.data("toponym-object").longitude});
                 selectToponym($toponym);
                 $toponym.addClass("ui-selected");
             }
-            cooridnates = d3.geom.hull(cooridnates);
-            VIZAPP.myMap.placePolygon($formant.data("formant-object"), [cooridnates], color);
+            computeClusters(coordinates, function(data){
+                console.log(data);
+                for (var i in data) {
+                    data[i] = d3.geom.hull(data[i]);
+                }        
+                VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
+            });
         });
     };
     
     var deselectToponym = function($toponym) {
-        //                $(".ui-selected", $groupsList).each(function(){
-        //                                        //It is not the best solution, but we can't for now put into jquery because of some strange group names.
-        //                                        if ($(this).attr("id") == toponymIdToGroupName[ui.unselected.id]){
-        //                                            $(this).removeClass("ui-selected")
-        //                                                   .css({ background: "#FFFFFF" });
-        //                                          if (groupIdToPolygon[$(this).attr("id")] != null)
-        //                                               groupIdToPolygon[$(this).attr("id")].setMap(null);
-        //                                          groupIdToPolygon[$(this).attr("id")] = null;
-        //                                        }
-        //                                      });
         $toponym.css({ background: "#FFFFFF" });          
         VIZAPP.myMap.hideMarker($toponym.data("toponym-object"));
     };
@@ -195,14 +212,11 @@ VIZAPP.gui = function () {
     var updateFormantState = function ($toponym) {
         $formant = $("#"+ $toponym.data("formant-id"), $("#groups-list"));
         $formant.removeClass("ui-selected")
-                .css({ background: "#FFFFFF" });
+        .css({ background: "#FFFFFF" });
         VIZAPP.myMap.hidePolygon($formant.data("formant-object"));
     }
     
     var deselectFormant = function($formant) {
-        //                if (groupIdToPolygon[ui.unselected.id] != null)
-        //                     groupIdToPolygon[ui.unselected.id].setMap(null);
-        //                groupIdToPolygon[ui.unselected.id] = null;
         $formant.css({ background: "#FFFFFF" });
         VIZAPP.myMap.hidePolygon($formant.data("formant-object"));
         VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
