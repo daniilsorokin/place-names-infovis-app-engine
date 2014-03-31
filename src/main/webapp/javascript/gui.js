@@ -140,23 +140,24 @@ VIZAPP.myMap = function () {
 VIZAPP.gui = function () {
     var colorGenerator = new ColorGenerator(2.4,2.4,2.4,0,2,4);
     var kmeans = new KMeans();
+    kmeans.kmpp = true;
     var $activeList = undefined;
     
     var convertClusters = function(){}
     var computeClusters = function(items, callback) {
-        kmeans.reset();
         kmeans.setPoints(items);
         kmeans.guessK();
-        kmeans.initCentroids();
-        
+//        kmeans.k = 2;
+        kmeans.initCentroids();        
         kmeans.cluster(function(){
             var clusters = new Array();
             for (var i = 0; i < kmeans.points.length; i++) {
-                console.log(kmeans.points[i]);
-                if (clusters[kmeans.points[i].centroid] === undefined) clusters[kmeans.points[i].centroid] = [];
-                if (!kmeans.points[i].items) clusters[kmeans.points[i].centroid].push(kmeans.points[i]);
+                var centroid = kmeans.points[i].centroid;
+                if (clusters[centroid] === undefined) {
+                    clusters[centroid] = new Array();
+                }
+                clusters[centroid].push(kmeans.points[i]);
             }
-            console.log(clusters);
             for (var i in clusters) {
                 for (var j in clusters[i]) {
                     clusters[i][j] = [clusters[i][j].x, clusters[i][j].y];
@@ -190,13 +191,17 @@ VIZAPP.gui = function () {
                 var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
                 var toponym =  $toponym.data("toponym-object");
                 if (toponym.latitude != "0.0")
-                    coordinates.push({x:$toponym.data("toponym-object").latitude, y:$toponym.data("toponym-object").longitude});
+                    coordinates.push({x:parseFloat(toponym.latitude), y:parseFloat(toponym.longitude)});
+//                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)-0.05});
+//                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)-0.05});
+//                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)+0.05});
+//                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)+0.05});
                 selectToponym($toponym);
                 $toponym.addClass("ui-selected");
             }
             computeClusters(coordinates, function(data){
-                console.log(data);
                 for (var i in data) {
+                    console.log("Cluster " + i + "(" + data[i].length + "):" + data[i]);
                     data[i] = d3.geom.hull(data[i]);
                 }        
                 VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
