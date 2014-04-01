@@ -1,6 +1,7 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,11 +14,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
 
 /**
  *
@@ -46,7 +53,9 @@ public class Formant implements Serializable {
     private List<Affix> affixList;
     @OneToMany(mappedBy = "formant")
     private List<ToponymObject> toponymObjectList;
-
+    @Transient
+    private List<Integer> toponymObjectIdList;
+    
     protected Formant() {
     }
 
@@ -88,6 +97,19 @@ public class Formant implements Serializable {
 
     public void setToponymObjectList(List<ToponymObject> toponymObjectList) {
         this.toponymObjectList = toponymObjectList;
+    }
+    
+    @XmlElement(name = "toponymIds")
+    public List<Integer> getToponymObjectIdList() {
+        toponymObjectIdList = new ArrayList<>();
+        for (ToponymObject toponymObject : toponymObjectList) {
+            toponymObjectIdList.add(toponymObject.getToponymNo());
+        }        
+        return toponymObjectIdList;
+    }
+    
+    public void setToponymObjectIdList(List<Integer> toponymObjectIdList) {
+        this.toponymObjectIdList = toponymObjectIdList;
     }
 
     @Override
