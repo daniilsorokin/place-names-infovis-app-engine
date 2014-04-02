@@ -121,7 +121,7 @@ VIZAPP.myMap = function () {
                     clickable: false,
                     strokeColor: color,
                     strokeOpacity: 0.5,
-                    strokeWeight: 2,
+                    strokeWeight: 0,
                     fillColor: color,
                     map: null,
                     fillOpacity: 0.2};
@@ -161,7 +161,6 @@ VIZAPP.gui = function () {
         var avgDist = sum / dists.length;
         var k = ~~(avgDist / 10000);
         k = k === 0 ? 1 : k;
-        console.log(avgDist, " " ,k);
         return k;
     }
     
@@ -171,7 +170,6 @@ VIZAPP.gui = function () {
         kmeans.initCentroids();
         kmeans.cluster(function(){
             var clusters = new Array();
-            console.log(kmeans.points)
             for (var i = 0; i < kmeans.points.length; i++) {
                 if (kmeans.points[i].items === undefined){
                     var centroid = kmeans.points[i].centroid;
@@ -222,13 +220,17 @@ VIZAPP.gui = function () {
             selectToponym($toponym);
             $toponym.addClass("ui-selected");
         }
-        console.log(coordinates);
-//        guessK(coordinates);
         computeClusters(coordinates, function(data){
             for (var i in data) {
-                console.log("Cluster " + i + "(" + data[i].length + "):" + data[i]);
-                data[i] = d3.geom.hull(data[i]);
-                console.log("Cluster after " + i + "(" + data[i].length + "):" + data[i]);
+                var dPoints = new Array();
+                for (var j in data[i]) {
+                    var aPoint = new google.maps.LatLng(data[i][j][0], data[i][j][1]);
+                    for(c = 0; c < 360; c += 360 / 6) {
+                        var bPoint = google.maps.geometry.spherical.computeOffset(aPoint, 3000, c)
+                        dPoints.push([bPoint.lat(), bPoint.lng()]);
+                    }
+                }
+                data[i] = d3.geom.hull(dPoints);
             }        
             VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
         });
