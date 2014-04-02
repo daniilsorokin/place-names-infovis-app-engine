@@ -182,10 +182,13 @@ var KMeans = (function () {
     var l = this.points.length;
 
     var p0 = this.points[ ~~(Math.random() * l) ];
+    this.centroids = [ {
+        x : p0.x,
+        y : p0.y,
+        centroid : 0,
+        items : 0
+      } ];
     
-    p0.centroid = 0;
-    this.centroids = [ p0 ];
-
     /**
      * 2. For each data point x, compute D(x), the distance between x and
      * the nearest center that has already been chosen.
