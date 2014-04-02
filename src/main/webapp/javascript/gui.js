@@ -74,6 +74,7 @@ VIZAPP.myMap = function () {
         overviewMapControl: true,					
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
+    var infoWindow = new google.maps.InfoWindow();
 
     var markers = {}
     var polygons = {}
@@ -89,18 +90,24 @@ VIZAPP.myMap = function () {
         placeMarker: function(toponym, color) {
             if (markers[toponym.toponymNo] === undefined) {
                 var opacity = 1.0;
-                var radius = 1000; 
+                var radius = 1500; 
                 var latlng = new google.maps.LatLng(parseFloat(toponym.latitude), parseFloat(toponym.longitude));
                 var circleOptions = {
                     strokeWeight: 0,
                     fillColor: color, //"#0066CC"
                     fillOpacity: opacity,
-                    map: null,
+                    map: map,
                     center: latlng,
                     radius: radius
                 };
                 var marker = new google.maps.Circle(circleOptions);
                 markers[toponym.toponymNo] = marker;
+                google.maps.event.addListener(marker, 'mouseover', function() {
+                    $(map.getDiv()).attr("title", toponym.name);
+                });
+                google.maps.event.addListener(marker, 'mouseout', function() {
+                    $(map.getDiv()).removeAttr("title");
+                });
             }
             markers[toponym.toponymNo].setMap(map);
         },
@@ -132,15 +139,16 @@ VIZAPP.myMap = function () {
         },
 
         hidePolygon:  function (formant) {
-            polygons[formant.formantNo].setMap(null)
+            if (polygons[formant.formantNo] !== undefined)
+                polygons[formant.formantNo].setMap(null);
         },
     };
 }();
 
 VIZAPP.gui = function () {
     var colorGenerator = new ColorGenerator(2.4,2.4,2.4,0,2,4);
-    var kmeans = new KMeans();
-    kmeans.kmpp = true;
+    var kmeans = new KMeans(); kmeans.kmpp = true;
+    
     var $activeList = undefined;
 
     var convertClusters = function(){}
