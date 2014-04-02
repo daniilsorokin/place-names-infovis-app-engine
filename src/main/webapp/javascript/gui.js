@@ -144,21 +144,42 @@ VIZAPP.gui = function () {
     var $activeList = undefined;
 
     var convertClusters = function(){}
-    var computeClusters = function(items, callback) {
-        console.log(items)
-        kmeans.setPoints(items);
-        kmeans.guessK();
-        //        kmeans.k = 2;
-        kmeans.initCentroids();        
+    var guessK = function(coordinates){
+        var gDistance = google.maps.geometry.spherical.computeDistanceBetween;
+        var dists = new Array();
+        for (var i in coordinates) {
+            var aPoint = new google.maps.LatLng(coordinates[i].x, coordinates[i].y);
+            for (var j = i; j < coordinates.length; j++){
+                var bPoint = new google.maps.LatLng(coordinates[j].x, coordinates[j].y);
+                dists.push(gDistance(aPoint, bPoint));
+            }
+        }
+        var sum = 0;
+        for (var d in dists){
+            sum += dists[d];
+        }
+        var avgDist = sum / dists.length;
+        var k = ~~(avgDist / 10000);
+        k = k === 0 ? 1 : k;
+        console.log(avgDist, " " ,k);
+        return k;
+    }
+    
+    var computeClusters = function(coordinates, callback) {
+        kmeans.k = guessK(coordinates);
+        kmeans.setPoints(coordinates);
+        kmeans.initCentroids();
         kmeans.cluster(function(){
             var clusters = new Array();
+            console.log(kmeans.points)
             for (var i = 0; i < kmeans.points.length; i++) {
                 if (kmeans.points[i].items === undefined){
                     var centroid = kmeans.points[i].centroid;
                     if (clusters[centroid] === undefined) {
                         clusters[centroid] = new Array();
                     }
-                    clusters[centroid].push(kmeans.points[i]);}
+                    clusters[centroid].push(kmeans.points[i]);
+                }
             }
             for (var i in clusters) {
                 for (var j in clusters[i]) {
@@ -188,27 +209,29 @@ VIZAPP.gui = function () {
         $formant.css({ background: color });
         var formant = $formant.data("formant-object");
         var toponymIds = formant.toponymIds;
-            var coordinates = new Array();
-            for(var idx in toponymIds) {
-                var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
-                var toponym =  $toponym.data("toponym-object");
-                if (toponym.latitude != "0.0")
-                    coordinates.push({x:parseFloat(toponym.latitude), y:parseFloat(toponym.longitude)});
-                //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)-0.05});
-                //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)-0.05});
-                //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)+0.05});
-                //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)+0.05});
-                selectToponym($toponym);
-                $toponym.addClass("ui-selected");
-            }
-            computeClusters(coordinates, function(data){
-                for (var i in data) {
-                    console.log("Cluster " + i + "(" + data[i].length + "):" + data[i]);
-                    data[i] = d3.geom.hull(data[i]);
-                    console.log("Cluster after " + i + "(" + data[i].length + "):" + data[i]);
-                }        
-                VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
-            });
+        var coordinates = new Array();
+        for(var idx in toponymIds) {
+            var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
+            var toponym =  $toponym.data("toponym-object");
+            if (toponym.latitude != "0.0")
+                coordinates.push({x:parseFloat(toponym.latitude), y:parseFloat(toponym.longitude)});
+            //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)-0.05});
+            //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)-0.05});
+            //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)+0.05});
+            //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)+0.05});
+            selectToponym($toponym);
+            $toponym.addClass("ui-selected");
+        }
+        console.log(coordinates);
+//        guessK(coordinates);
+        computeClusters(coordinates, function(data){
+            for (var i in data) {
+                console.log("Cluster " + i + "(" + data[i].length + "):" + data[i]);
+                data[i] = d3.geom.hull(data[i]);
+                console.log("Cluster after " + i + "(" + data[i].length + "):" + data[i]);
+            }        
+            VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
+        });
     };
 
     var deselectToponym = function($toponym) {
