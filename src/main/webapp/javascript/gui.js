@@ -186,8 +186,8 @@ VIZAPP.gui = function () {
     var selectFormant = function($formant) {
         var color = $formant.data("formant-color");
         $formant.css({ background: color });
-        //  Fix here! can be done without repeating queries
-        VIZAPP.dataInterface.getToponymIdsByFormant($formant.attr('id'), function(toponymIds) {
+        var formant = $formant.data("formant-object");
+        var toponymIds = formant.toponymIds;
             var coordinates = new Array();
             for(var idx in toponymIds) {
                 var $toponym = $("#" + toponymIds[idx], $("#toponyms-list"));
@@ -209,7 +209,6 @@ VIZAPP.gui = function () {
                 }        
                 VIZAPP.myMap.placePolygon($formant.data("formant-object"), data, color);
             });
-        });
     };
 
     var deselectToponym = function($toponym) {
@@ -281,11 +280,17 @@ VIZAPP.gui = function () {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
                     var color = colorGenerator.generateNextColor();
+                    var groupHtml = $("<span>").text(formant.formantName).append(
+                        $("<span>")
+                        .addClass("badge")
+                        .addClass("pull-right")
+                        .text(formant.toponymIds.length)
+                    );
                     $("<li>").attr("id", formant.formantNo)
                     .data("formant-object", formant)
                     .data("formant-color", color)
                     .addClass("ui-widget-content")
-                    .html(formant.formantName + " " + formant.toponymIds.length)
+                    .append(groupHtml)
                     .appendTo($groupsList);
                 }
                 $("#select-groups-btn").prop("disabled", false);

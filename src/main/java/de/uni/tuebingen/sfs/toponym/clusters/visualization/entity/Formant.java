@@ -53,8 +53,8 @@ public class Formant implements Serializable {
     private List<Affix> affixList;
     @OneToMany(mappedBy = "formant")
     private List<ToponymObject> toponymObjectList;
-    @Transient
-    private List<Integer> toponymObjectIdList;
+//    @Transient
+//    private List<Integer> toponymObjectIdList;
     
     protected Formant() {
     }
@@ -101,15 +101,11 @@ public class Formant implements Serializable {
     
     @XmlElement(name = "toponymIds")
     public List<Integer> getToponymObjectIdList() {
-        toponymObjectIdList = new ArrayList<>();
+        List<Integer> toponymObjectIdList = new ArrayList<>();
         for (ToponymObject toponymObject : toponymObjectList) {
             toponymObjectIdList.add(toponymObject.getToponymNo());
         }        
         return toponymObjectIdList;
-    }
-    
-    public void setToponymObjectIdList(List<Integer> toponymObjectIdList) {
-        this.toponymObjectIdList = toponymObjectIdList;
     }
 
     @Override
