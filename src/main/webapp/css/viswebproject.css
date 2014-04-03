@@ -14,13 +14,6 @@ td {margin: 0px; padding:0px;}
 
 /* classes */
 table.page-structure {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    
     border: 0px;
     border-collapse:collapse;
     width:100%; 
@@ -35,7 +28,15 @@ div.mousescroll {
     text-align: center;
 }
 
-.nano { height: 100%; width:100%}
+.disable-select {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -o-user-select:none;
+    user-select:none
+}
+
+.nano { height: 100%; width:100%; }
 .nano .pane   { background: #888; }
 .nano .slider { background: #111; }
 
@@ -54,7 +55,6 @@ div.mousescroll {
     height: 20pt; }
 .list .ui-selecting { border-color: #0066CC; }
 .list .ui-selected { background: #0066CC; color: white; }
-
 
 /* particular elements (based on id) */
 #deselect-button {

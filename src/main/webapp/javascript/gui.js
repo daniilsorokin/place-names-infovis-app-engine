@@ -307,11 +307,17 @@ VIZAPP.gui = function () {
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
                     var toponym = loadedToponymObjects[i];
+                    var toponymHtml = $("<span>").addClass("clearfix").text(toponym.name).append(
+                        $("<span>")
+                        .addClass("glyphicon")
+                        .addClass("glyphicon-chevron-right")
+                        .addClass("pull-right")
+                    );
                     $("<li>").attr("id", toponym.toponymNo)
                     .data("formant-id", toponym.formant.formantNo)
                     .data("toponym-object", toponym)
                     .addClass("ui-widget-content")
-                    .html(toponym.name)
+                    .html(toponymHtml)
                     .appendTo($toponymsList);
                 }
                 $("#select-toponyms-btn").prop("disabled", false);
@@ -322,7 +328,7 @@ VIZAPP.gui = function () {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
                     var color = colorGenerator.generateNextColor();
-                    var groupHtml = $("<span>").text(formant.formantName).append(
+                    var groupHtml = $("<span>").addClass("clearfix").text(formant.formantName).append(
                         $("<span>")
                         .addClass("badge")
                         .addClass("pull-right")
@@ -340,18 +346,19 @@ VIZAPP.gui = function () {
             });
 
             $toponymsList.on( "selectablestop", function( event, ui ) {
-                $(".ui-selected" , this).each(function() { 
+                $("li.ui-selected" , this).each(function() { 
                     selectToponym($(this));
                 });
             });
 
             $groupsList.on( "selectablestop", function( event, ui ) {
-                $(".ui-selected" , this).each(function() {
+                $("li.ui-selected" , this).each(function() {
                     selectFormant($(this));
                 });        
             });            
 
             $toponymsList.on( "selectableunselected", function( event, ui ) {
+                console.log(ui.unselected);
                 deselectToponym($(ui.unselected));
                 updateFormantState($(ui.unselected));
             } );

@@ -24,13 +24,11 @@
         
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-        
         <link rel="stylesheet" href="vendor/nanoscroller/nanoscroller.css">
-        
         <link rel="stylesheet" href="css/viswebproject.css">
     </head>
     <body>
-        <table id="page-structure" class="page-structure">
+        <table id="page-structure" class="page-structure disable-select">
             <tr><td id="list-selector-container" class="left-column-element">
                         <div id="list-selector" class="btn-group btn-group-sm">
                             <button id="select-toponyms-btn" type="button" class="btn btn-primary" disabled>Toponyms</button>
@@ -50,7 +48,7 @@
                     <div id="toponyms-list-container" class="list-holder">
                         <div class="nano">
                             <div class="content">
-                                <ul id="toponyms-list" class="list"></ul>
+                                <ul id="toponyms-list" class="list disable-select"></ul>
                             </div>
                         </div>
                     </div>
