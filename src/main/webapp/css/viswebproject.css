@@ -40,6 +40,13 @@ div.mousescroll {
 .nano .pane   { background: #888; }
 .nano .slider { background: #111; }
 
+.allow-overflow {
+    overflow-y: visible;
+}
+
+.info-trigger {
+}
+
 .list { 
     list-style-type: none; 
     margin: 0px; 

@@ -283,8 +283,8 @@ VIZAPP.gui = function () {
 
             var $toponymsList = $("#toponyms-list");
             var $groupsList = $("#groups-list");
-
-            $(".list").selectable();
+            $(".list").selectable({filter:"li", cancel:".info-trigger"});
+            
             $("#toponyms-list-container").show();
             $("#groups-list-container").hide();
             $activeList = $toponymsList;
@@ -295,29 +295,33 @@ VIZAPP.gui = function () {
                 $activeList = $toponymsList;
                 $("#toponyms-list-container").show('slide',{ direction: "left" });
                 $("#groups-list-container").hide('slide', { direction: "right" });
-                $(".nano").nanoScroller();
             });
             $("#select-groups-btn").click(function (){
                 $activeList = $groupsList;
                 $("#groups-list-container").show('slide',{ direction: "right" });
                 $("#toponyms-list-container").hide('slide', { direction: "left" });
-                $(".nano").nanoScroller();
             });
 
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
                     var toponym = loadedToponymObjects[i];
-                    var toponymHtml = $("<span>").addClass("clearfix").text(toponym.name).append(
-                        $("<span>")
-                        .addClass("glyphicon")
-                        .addClass("glyphicon-chevron-right")
-                        .addClass("pull-right")
-                    );
+                    var $toponymHtml = $("<span>")
+                        .text(toponym.name);
+//                    $("<div>").addClass("panel").addClass("panel-default").text("Test test")
+//                    .css({display: "block"})
+//                    .appendTo($toponymHtml);
+                    
+//                    $("<span>").addClass("glyphicon")
+//                        .addClass("glyphicon-chevron-right")
+//                        .addClass("pull-right")
+//                        .addClass("info-trigger")
+////                        .popover({content:"test",placement:"right", container: "#toponyms-list-container"})
+//                        .appendTo($toponymHtml).click(function(event){ });
                     $("<li>").attr("id", toponym.toponymNo)
                     .data("formant-id", toponym.formant.formantNo)
                     .data("toponym-object", toponym)
                     .addClass("ui-widget-content")
-                    .html(toponymHtml)
+                    .html($toponymHtml)
                     .appendTo($toponymsList);
                 }
                 $("#select-toponyms-btn").prop("disabled", false);
@@ -328,7 +332,7 @@ VIZAPP.gui = function () {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
                     var color = colorGenerator.generateNextColor();
-                    var groupHtml = $("<span>").addClass("clearfix").text(formant.formantName).append(
+                    var groupHtml = $("<span>").text(formant.formantName).append(
                         $("<span>")
                         .addClass("badge")
                         .addClass("pull-right")
@@ -358,7 +362,6 @@ VIZAPP.gui = function () {
             });            
 
             $toponymsList.on( "selectableunselected", function( event, ui ) {
-                console.log(ui.unselected);
                 deselectToponym($(ui.unselected));
                 updateFormantState($(ui.unselected));
             } );
