@@ -98,7 +98,8 @@ VIZAPP.myMap = function () {
                     fillOpacity: opacity,
                     map: map,
                     center: latlng,
-                    radius: radius
+                    radius: radius,
+                    zIndex: 2
                 };
                 var marker = new google.maps.Circle(circleOptions);
                 markers[toponym.toponymNo] = marker;
@@ -125,15 +126,23 @@ VIZAPP.myMap = function () {
                 }
                 var polygonOptions = {
                     paths: clusters,
-                    clickable: false,
+                    clickable: true,
                     strokeColor: color,
                     strokeOpacity: 0.5,
                     strokeWeight: 0,
                     fillColor: color,
                     map: null,
-                    fillOpacity: 0.2};
+                    fillOpacity: 0.2,
+                    zIndex: 1
+                };
                 var polygon = new google.maps.Polygon(polygonOptions);
                 polygons[formant.formantNo] = polygon;
+                google.maps.event.addListener(polygon, 'mouseover', function() {
+                    $(map.getDiv()).attr("title", formant.formantName);
+                });
+                google.maps.event.addListener(polygon, 'mouseout', function() {
+                    $(map.getDiv()).removeAttr("title");
+                });                
             }
             polygons[formant.formantNo].setMap(map);
         },
