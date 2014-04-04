@@ -19,6 +19,8 @@ table.page-structure {
     
     border: 0px;
     border-collapse:collapse;
+    
+    overflow: hidden;
 }
 
 div.mousescroll {
@@ -43,13 +45,6 @@ div.mousescroll {
 .nano { height: 100%; width:100%; }
 .nano .pane   { background: #888; }
 .nano .slider { background: #111; }
-
-.allow-overflow {
-    overflow-y: visible;
-}
-
-.info-trigger {
-}
 
 .triggered {
     color: #1e8826;
@@ -128,8 +123,7 @@ div.mousescroll {
     height: 100%; 
     position: absolute; 
     
-    margin: 5px 5px; 
-    padding: 5px; 
+    margin: 0px 5px; 
     
     z-Index: 1;
     pointer-events:none;

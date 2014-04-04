@@ -269,10 +269,6 @@ VIZAPP.gui = function () {
             var toponym =  $toponym.data("toponym-object");
             if (toponym.latitude != "0.0")
                 coordinates.push({x:parseFloat(toponym.latitude), y:parseFloat(toponym.longitude)});
-            //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)-0.05});
-            //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)-0.05});
-            //                    coordinates.push({x:parseFloat(toponym.latitude)+0.025, y:parseFloat(toponym.longitude)+0.05});
-            //                    coordinates.push({x:parseFloat(toponym.latitude)-0.025, y:parseFloat(toponym.longitude)+0.05});
             selectToponym($toponym);
             $toponym.addClass("ui-selected");
         }
