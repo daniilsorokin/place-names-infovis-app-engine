@@ -352,7 +352,7 @@ VIZAPP.gui = function () {
                         .addClass("glyphicon-chevron-right")
                         .addClass("pull-right")
                         .addClass("info-trigger")
-                        .data("title", toponym.name)
+                        .data("title", toponym.name + "</br>" + toponym.englishTransliteration)
                         .data("content", toponym.formant.formantName + "</br>" + toponym.latitude + " " + toponym.longitude)
                         .click(function(){ showInfo($(this)); })
                         .appendTo($toponymHtml)
