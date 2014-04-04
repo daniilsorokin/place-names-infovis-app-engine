@@ -161,7 +161,8 @@ VIZAPP.gui = function () {
     
     var $activeList = undefined;
     
-    var trigger = function($target) {
+    var trigger = function($target, callback) {
+        if (typeof callback !== 'function') callback = function(){};
         if ($target.hasClass("triggered")){
             $target.removeClass("triggered");
             var angle = 0, start = -180;
@@ -171,7 +172,8 @@ VIZAPP.gui = function () {
         }
         $({deg: start}).animate({deg: angle}, {
             duration: 200,
-            step: function(now) { $target.css({transform: 'rotate(' + now + 'deg)'});}
+            step: function(now) { $target.css({transform: 'rotate(' + now + 'deg)'});},
+            done: function() { callback($target) }
         });
 
     }
@@ -182,7 +184,9 @@ VIZAPP.gui = function () {
             trigger($element);
             $infoWindow.hide("slide", { direction: "left", duration: 200,});
         } else {            
-            $(".triggered", $activeList).each(function(){trigger($(this));});
+            $("span.triggered", $activeList).each(function(){
+                trigger($(this), function(x){ x.fadeOut({duration: 100}); });
+            });
             trigger($element);
             $infoWindow.hide("slide", { 
                 direction: "left",
@@ -351,12 +355,14 @@ VIZAPP.gui = function () {
                         .data("title", toponym.name)
                         .data("content", toponym.formant.formantName + "</br>" + toponym.latitude + " " + toponym.longitude)
                         .click(function(){ showInfo($(this)); })
-                        .appendTo($toponymHtml);
+                        .appendTo($toponymHtml)
+                        .hide();
                     $("<li>").attr("id", toponym.toponymNo)
                     .data("formant-id", toponym.formant.formantNo)
                     .data("toponym-object", toponym)
                     .addClass("ui-widget-content")
                     .html($toponymHtml)
+                    .hover(function(){ $(".info-trigger", this).show(); }, function(){ $(".info-trigger:not(.triggered)", this).hide(); })
                     .appendTo($toponymsList);
                 }
                 $("#select-toponyms-btn").prop("disabled", false);

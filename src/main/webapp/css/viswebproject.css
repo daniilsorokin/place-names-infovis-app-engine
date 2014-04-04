@@ -52,8 +52,8 @@ div.mousescroll {
 
 .list { 
     list-style-type: none; 
-    margin: 0px; 
-    padding: 0px;  
+    margin: 0px;
+    padding: 0px 0px 0px 0px;
     width: 100%;
     position: absolute;
     text-align: left;
@@ -62,8 +62,8 @@ div.mousescroll {
 .list li { 
     height: 20pt; 
     
-    margin: 3px; 
-    padding: 0.4em; 
+    margin: 3px;
+    padding: 0.4em 10px 0.4em 0.4em;
     
     font-size: 10pt; 
 }
