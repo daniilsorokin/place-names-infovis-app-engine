@@ -47,6 +47,10 @@ div.mousescroll {
 .info-trigger {
 }
 
+.triggered {
+    color: #1e8826;
+}
+
 .list { 
     list-style-type: none; 
     margin: 0px; 

@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Toponyms InfoVis Project</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
         <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false&libraries=geometry"></script>
@@ -23,9 +23,9 @@
         </script>
         
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="vendor/nanoscroller/nanoscroller.css">
-        <link rel="stylesheet" href="css/viswebproject.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="vendor/nanoscroller/nanoscroller.css" />
+        <link rel="stylesheet" href="css/viswebproject.css" />
     </head>
     <body>
         <table id="page-structure" class="page-structure disable-select">
@@ -35,7 +35,11 @@
                             <button id="select-groups-btn" type="button" class="btn btn-primary" disabled>Groups</button>
                         </div>
                 </td>
-                <td rowspan="3"><div id="map_canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div></td></tr>
+                <td rowspan="3">
+                    <div id="info-window-container" style="position:absolute; width:20%; height:100%; margin:5px 5px; padding:5px; z-Index: 1;pointer-events:none;"></div>
+                    <div id="map-canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div>
+                </td>
+            </tr>
             <tr>
                 <td class="left-column-element control-panel-container">
                     <div class="list-control-panel">

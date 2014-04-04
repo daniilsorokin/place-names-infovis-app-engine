@@ -70,8 +70,9 @@ VIZAPP.myMap = function () {
         center: new google.maps.LatLng(59.4, 29.13333),
         streetViewControl: false,
         mapTypeControl: false,
-        scaleControl: true,
-        overviewMapControl: true,					
+        zoomControl: true,
+        panControl: false,
+        zoomControlOptions: {style: google.maps.ZoomControlStyle.SMALL, position: google.maps.ControlPosition.RIGHT_BOTTOM},
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
     var infoWindow = new google.maps.InfoWindow();
@@ -82,7 +83,7 @@ VIZAPP.myMap = function () {
     return {
         init: function() {
             google.maps.visualRefresh = true;
-            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
             map.setCenter(VIZAPP.databases[0].startPoint);
             map.setZoom(VIZAPP.databases[0].startZoom);
         },
@@ -159,8 +160,45 @@ VIZAPP.gui = function () {
     var kmeans = new KMeans(); kmeans.kmpp = true;
     
     var $activeList = undefined;
+    var $infoWindow = $("<div>").addClass("panel")
+                                .addClass("panel-default")
+                                .append($("<div>")
+                                    .addClass("panel-heading"))
+                                .append($("<div>")
+                                    .addClass("panel-body"));
+    
+    var trigger = function($target) {
+        if ($target.hasClass("triggered")){
+            $target.removeClass("triggered");
+            var angle = 0, start = -180;
+        } else {
+            $target.addClass("triggered");
+            var angle = -180, start = 0;
+        }
+        $({deg: start}).animate({deg: angle}, {
+            duration: 200,
+            step: function(now) { $target.css({transform: 'rotate(' + now + 'deg)'});}
+        });
 
-    var convertClusters = function(){}
+    }
+    
+    var showInfo = function($element) {
+        if ($element.hasClass("triggered")){
+            trigger($element);
+            $infoWindow.hide(); 
+        } else {            
+            $(".triggered", $activeList).each(function(){trigger($(this));});
+            trigger($element);
+            $infoWindow.show(); 
+            $(".panel-heading", $infoWindow).html($element.data("title"));
+            $(".panel-body", $infoWindow).html($element.data("content"));
+        }
+    }
+    
+    var convertClusters = function(){
+        //TODO
+    }
+    
     var guessK = function(coordinates){
         var gDistance = google.maps.geometry.spherical.computeDistanceBetween;
         var dists = new Array();
@@ -301,22 +339,22 @@ VIZAPP.gui = function () {
                 $("#groups-list-container").show('slide',{ direction: "right" });
                 $("#toponyms-list-container").hide('slide', { direction: "left" });
             });
+            
+            $infoWindow.appendTo($("#info-window-container")).hide();
 
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
                     var toponym = loadedToponymObjects[i];
                     var $toponymHtml = $("<span>")
                         .text(toponym.name);
-//                    $("<div>").addClass("panel").addClass("panel-default").text("Test test")
-//                    .css({display: "block"})
-//                    .appendTo($toponymHtml);
-                    
-//                    $("<span>").addClass("glyphicon")
-//                        .addClass("glyphicon-chevron-right")
-//                        .addClass("pull-right")
-//                        .addClass("info-trigger")
-////                        .popover({content:"test",placement:"right", container: "#toponyms-list-container"})
-//                        .appendTo($toponymHtml).click(function(event){ });
+                    $("<span>").addClass("glyphicon")
+                        .addClass("glyphicon-chevron-right")
+                        .addClass("pull-right")
+                        .addClass("info-trigger")
+                        .data("title", toponym.name)
+                        .data("content", toponym.formant.formantName + "</br>" + toponym.latitude + " " + toponym.longitude)
+                        .click(function(){ showInfo($(this)); })
+                        .appendTo($toponymHtml);
                     $("<li>").attr("id", toponym.toponymNo)
                     .data("formant-id", toponym.formant.formantNo)
                     .data("toponym-object", toponym)
