@@ -160,12 +160,6 @@ VIZAPP.gui = function () {
     var kmeans = new KMeans(); kmeans.kmpp = true;
     
     var $activeList = undefined;
-    var $infoWindow = $("<div>").addClass("panel")
-                                .addClass("panel-default")
-                                .append($("<div>")
-                                    .addClass("panel-heading"))
-                                .append($("<div>")
-                                    .addClass("panel-body"));
     
     var trigger = function($target) {
         if ($target.hasClass("triggered")){
@@ -183,15 +177,22 @@ VIZAPP.gui = function () {
     }
     
     var showInfo = function($element) {
+        var $infoWindow = $("#info-window-container .panel");
         if ($element.hasClass("triggered")){
             trigger($element);
-            $infoWindow.hide(); 
+            $infoWindow.hide("slide", { direction: "left", duration: 200,});
         } else {            
             $(".triggered", $activeList).each(function(){trigger($(this));});
             trigger($element);
-            $infoWindow.show(); 
-            $(".panel-heading", $infoWindow).html($element.data("title"));
-            $(".panel-body", $infoWindow).html($element.data("content"));
+            $infoWindow.hide("slide", { 
+                direction: "left",
+                duration: 200,
+                complete: function(){
+                    $(".panel-heading", $infoWindow).html($element.data("title"));
+                    $(".panel-body", $infoWindow).html($element.data("content"));
+                    $infoWindow.offset({top: $element.offset().top - ($infoWindow.height()/2) });
+                }
+            }).show("slide", { direction: "left", duration: 200 });
         }
     }
     
@@ -340,7 +341,7 @@ VIZAPP.gui = function () {
                 $("#toponyms-list-container").hide('slide', { direction: "left" });
             });
             
-            $infoWindow.appendTo($("#info-window-container")).hide();
+            $("#info-window-container .panel").hide();
 
             VIZAPP.dataInterface.getAllToponyms(function(loadedToponymObjects){
                 for (var i in loadedToponymObjects) {
