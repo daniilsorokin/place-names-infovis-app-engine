@@ -36,12 +36,24 @@
                         </div>
                 </td>
                 <td rowspan="3">
-                    <div id="info-window-container">
+                    <div id="info-window-container" class="info-window-container">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <button type="button" class="close" aria-hidden="true">&times;</button>
+                                <h4 class="small-margins"><span class="title"></span></br><small></small></h4>
                             </div>
-                            <div class="panel-body"></div>
+                            <div class="panel-body">
+                                <dl class="dl-horizontal info-list">
+                                    <dt>LatLng</dt>
+                                    <dd class="latlng"></dd>
+                                    <dt>Language</dt>
+                                    <dd class="language"></dd>
+                                    <dt>Type</dt>
+                                    <dd class="type"></dd>
+                                    <dt>Group</dt>
+                                    <dd class="group"></dd>
+                                </dl>
+                            </div>
                         </div>
                     </div>
                     <div id="map-canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div>

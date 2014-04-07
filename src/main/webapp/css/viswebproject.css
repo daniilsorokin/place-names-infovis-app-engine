@@ -98,7 +98,42 @@ div.mousescroll {
     width: 250px;
 }
 
+.info-window-container {
+    width: 20%; 
+    height: 100%; 
+    position: absolute; 
+    
+    margin: 0px 5px; 
+    
+    z-Index: 1;
+    pointer-events:none;
+}
 
+.info-window-container .panel {
+    position: absolute;
+    min-width: 250px;
+}
+
+.info-list {
+    font-size: 10pt;
+    margin: 0px;
+}
+
+.info-list dt {
+    width: 80px;
+}
+
+.info-list dd {
+    margin-left: 90px;
+}
+
+.panel {
+    pointer-events: auto;
+}
+
+.small-margins {
+    margin: 2px;
+}
 /* particular elements (based on id) */
 #deselect-button {
     margin: 3px;
@@ -116,20 +151,4 @@ div.mousescroll {
     padding: 3px 5px;
     text-align: center;
     vertical-align: middle;
-}
-
-#info-window-container {
-    width: 20%; 
-    height: 100%; 
-    position: absolute; 
-    
-    margin: 0px 5px; 
-    
-    z-Index: 1;
-    pointer-events:none;
-}
-
-#info-window-container .panel {
-    position: absolute;
-    min-width: 200px;
 }

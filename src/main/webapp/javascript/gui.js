@@ -192,8 +192,20 @@ VIZAPP.gui = function () {
                 direction: "left",
                 duration: 200,
                 complete: function(){
-                    $(".panel-heading", $infoWindow).html($element.data("title"));
-                    $(".panel-body", $infoWindow).html($element.data("content"));
+                    var toponym = $element.parents("li").data("toponym-object");
+                    console.log(toponym);
+                    $(".close", $infoWindow).click(function(){
+                        $("span.triggered", $activeList).each(function(){
+                            trigger($(this), function(x){ x.fadeOut({duration: 100}); });
+                        });
+                        $infoWindow.hide("slide", { direction: "left", duration: 200,});
+                    });
+                    $("h4 .title", $infoWindow).html(toponym.name);
+                    $("h4 small", $infoWindow).html(toponym.englishTransliteration);
+                    $("dd.latlng", $infoWindow).html(toponym.latitude + ", " + toponym.longitude);
+                    $("dd.language", $infoWindow).html(toponym.language.name);
+                    $("dd.type", $infoWindow).html(toponym.type.name);
+                    $("dd.group", $infoWindow).html(toponym.formant.formantName);
                     $infoWindow.offset({top: $element.offset().top - ($infoWindow.height()/2) });
                 }
             }).show("slide", { direction: "left", duration: 200 });
@@ -352,8 +364,6 @@ VIZAPP.gui = function () {
                         .addClass("glyphicon-chevron-right")
                         .addClass("pull-right")
                         .addClass("info-trigger")
-                        .data("title", toponym.name + "</br>" + toponym.englishTransliteration)
-                        .data("content", toponym.formant.formantName + "</br>" + toponym.latitude + " " + toponym.longitude)
                         .click(function(){ showInfo($(this)); })
                         .appendTo($toponymHtml)
                         .hide();
@@ -362,7 +372,7 @@ VIZAPP.gui = function () {
                     .data("toponym-object", toponym)
                     .addClass("ui-widget-content")
                     .html($toponymHtml)
-                    .hover(function(){ $(".info-trigger", this).show(); }, function(){ $(".info-trigger:not(.triggered)", this).hide(); })
+                    .hover(function(){ $(".info-trigger", this).show(); }, function(){ $("span.info-trigger:not(.triggered)", this).hide(); })
                     .appendTo($toponymsList);
                 }
                 $("#select-toponyms-btn").prop("disabled", false);
