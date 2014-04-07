@@ -109,6 +109,10 @@ div.mousescroll {
     pointer-events:none;
 }
 
+.group-badge {
+    margin: 0px 10px;
+}
+
 .info-window-container .panel {
     position: absolute;
     min-width: 250px;

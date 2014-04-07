@@ -179,7 +179,7 @@ VIZAPP.gui = function () {
     }
     
     var showInfo = function($element) {
-        var $infoWindow = $("#info-window-container .panel");
+        var $infoWindow = $("#toponym-info-panel");
         if ($element.hasClass("triggered")){
             trigger($element);
             $infoWindow.hide("slide", { direction: "left", duration: 200,});
@@ -205,7 +205,7 @@ VIZAPP.gui = function () {
                     $("dd.latlng", $infoWindow).html(toponym.latitude + ", " + toponym.longitude);
                     $("dd.language", $infoWindow).html(toponym.language.name);
                     $("dd.type", $infoWindow).html(toponym.type.name);
-                    $("dd.group", $infoWindow).html(toponym.formant.formantName);
+                    $("dd.group button", $infoWindow).html(toponym.formant.formantName);
                     $infoWindow.offset({top: $element.offset().top - ($infoWindow.height()/2) });
                 }
             }).show("slide", { direction: "left", duration: 200 });
@@ -346,11 +346,13 @@ VIZAPP.gui = function () {
                 $activeList = $toponymsList;
                 $("#toponyms-list-container").show('slide',{ direction: "left" });
                 $("#groups-list-container").hide('slide', { direction: "right" });
+                $(".nano").nanoScroller();
             });
             $("#select-groups-btn").click(function (){
                 $activeList = $groupsList;
                 $("#groups-list-container").show('slide',{ direction: "right" });
                 $("#toponyms-list-container").hide('slide', { direction: "left" });
+                $(".nano").nanoScroller();
             });
             
             $("#info-window-container .panel").hide();
@@ -383,17 +385,24 @@ VIZAPP.gui = function () {
                 for (var i in loadedFormants) {
                     var formant = loadedFormants[i];
                     var color = colorGenerator.generateNextColor();
-                    var groupHtml = $("<span>").text(formant.formantName).append(
-                        $("<span>")
-                        .addClass("badge")
+                    var $groupHtml = $("<span>").text(formant.formantName);
+                    $("<span>").addClass("glyphicon")
+                        .addClass("glyphicon-chevron-right")
                         .addClass("pull-right")
+                        .addClass("info-trigger")
+                        .appendTo($groupHtml)
+                        .css('visibility', 'hidden');
+                    $("<span>").addClass("badge")
+//                        .addClass("pull-right")
+                        .addClass("group-badge")
                         .text(formant.toponymIds.length)
-                    );
+                        .appendTo($groupHtml);
                     $("<li>").attr("id", formant.formantNo)
                     .data("formant-object", formant)
                     .data("formant-color", color)
                     .addClass("ui-widget-content")
-                    .append(groupHtml)
+                    .html($groupHtml)
+                    .hover(function(){ $(".info-trigger", this).css('visibility', 'visible'); }, function(){ $("span.info-trigger:not(.triggered)", this).css('visibility', 'hidden'); })
                     .appendTo($groupsList);
                 }
                 $("#select-groups-btn").prop("disabled", false);
