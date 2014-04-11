@@ -113,9 +113,13 @@ div.mousescroll {
     margin: 0px 10px;
 }
 
+.element-info-btn {
+    margin: 1px;
+}
+
 .info-window-container .panel {
     position: absolute;
-    min-width: 250px;
+    min-width: 300px;
 }
 
 .info-list {
@@ -124,11 +128,11 @@ div.mousescroll {
 }
 
 .info-list dt {
-    width: 80px;
+    width: 70px;
 }
 
 .info-list dd {
-    margin-left: 90px;
+    margin-left: 80px;
 }
 
 .panel {
