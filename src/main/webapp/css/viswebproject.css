@@ -1,0 +1,162 @@
+/* 
+    Document   : viswebproject
+    Created on : Mar 10, 2013, 11:25:17 AM
+    Author     : Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
+    Description:
+*/
+
+/* elements */
+root { display: block;}
+html,body{ margin:0; padding:0; height:100%; border:none}
+table {margin: 0px; padding:0px;}
+tr {margin: 0px; padding:0px;}
+td {margin: 0px; padding:0px;}
+
+/* classes */
+table.page-structure {
+    width:100%; 
+    height:100%;
+    
+    border: 0px;
+    border-collapse:collapse;
+    
+    overflow: hidden;
+}
+
+div.mousescroll {
+    height: 100%; 
+
+    position: relative;
+
+    text-align: center;
+
+    overflow-y: scroll;
+    overflow:-moz-scrollbars-vertical; 
+}
+
+.disable-select {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -o-user-select:none;
+    user-select:none
+}
+
+.nano { height: 100%; width:100%; }
+.nano .pane   { background: #888; }
+.nano .slider { background: #111; }
+
+.triggered {
+    color: #1e8826;
+}
+
+.list { 
+    list-style-type: none; 
+    margin: 0px;
+    padding: 0px 0px 0px 0px;
+    width: 100%;
+    position: absolute;
+    text-align: left;
+}
+
+.list li { 
+    height: 20pt; 
+    
+    margin: 3px;
+    padding: 0.4em 10px 0.4em 0.4em;
+    
+    font-size: 10pt; 
+}
+
+.list .ui-selecting { border-color: #0066CC; }
+.list .ui-selected { background: #0066CC; color: white; }
+
+.list-container {
+      height   : 100%;
+}
+
+.list-control-panel {
+    width: 100%;
+    
+    border-bottom: 1px solid #cecece;
+    
+    text-align:center;
+    vertical-align:middle;
+        
+}
+
+.control-panel-container {
+    height: 10px
+}
+
+.list-holder {
+    height: 100%;
+    width: auto;
+}
+
+.left-column-element {
+    width: 250px;
+}
+
+.info-window-container {
+    width: 20%; 
+    height: 100%; 
+    position: absolute; 
+    
+    margin: 0px 5px; 
+    
+    z-Index: 1;
+    pointer-events:none;
+}
+
+.group-badge {
+    margin: 0px 10px;
+}
+
+.element-info-btn {
+    margin: 1px;
+}
+
+.info-window-container .panel {
+    position: absolute;
+    min-width: 300px;
+}
+
+.info-list {
+    font-size: 10pt;
+    margin: 0px;
+}
+
+.info-list dt {
+    width: 70px;
+}
+
+.info-list dd {
+    margin-left: 80px;
+}
+
+.panel {
+    pointer-events: auto;
+}
+
+.small-margins {
+    margin: 2px;
+}
+/* particular elements (based on id) */
+#deselect-button {
+    margin: 3px;
+    padding: 8px 8px;
+}
+
+#list-selector-container { 
+    height: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgb(178, 178, 178);
+}
+
+#list-selector{
+    margin: 0px 0px; 
+    padding: 3px 5px;
+    text-align: center;
+    vertical-align: middle;
+}

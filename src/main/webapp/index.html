@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+    <head>
+        <title>Toponyms InfoVis Project</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false&libraries=geometry"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        
+        <script type="text/javascript" src="vendor/nanoscroller/jquery.nanoscroller.min.js"></script>
+        <script type="text/javascript" src="vendor/kmeans/kmeans.js"></script>
+        
+        <script type="text/javascript" src="javascript/main.js"></script>
+        <script type="text/javascript" src="javascript/colors.js"></script>
+        <script type="text/javascript" src="javascript/gui.js"></script>
+        
+        <script type="text/javascript">
+            $( document ).ready( function() {
+                VIZAPP.initialize();
+            });
+        </script>
+        
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="vendor/nanoscroller/nanoscroller.css" />
+        <link rel="stylesheet" href="css/viswebproject.css" />
+    </head>
+    <body>
+        <table id="page-structure" class="page-structure disable-select">
+            <tr><td id="list-selector-container" class="left-column-element">
+                        <div id="list-selector" class="btn-group btn-group-sm">
+                            <button id="select-toponyms-btn" type="button" class="btn btn-primary" disabled>Toponyms</button>
+                            <button id="select-groups-btn" type="button" class="btn btn-primary" disabled>Groups</button>
+                        </div>
+                </td>
+                <td rowspan="3">
+                    <div id="info-window-container" class="info-window-container">
+                        <div id="info-panel" class="panel panel-default">
+                            <div class="panel-heading">
+                                <button type="button" class="close" aria-hidden="true">&times;</button>
+                                <h4 class="small-margins"><span class="title"></span></br><small></small></h4>
+                            </div>
+                            <div class="panel-body">
+                                <dl class="dl-horizontal info-list">
+                                    <dt class="latlng">LatLng</dt>
+                                    <dd class="latlng"></dd>
+                                    <dt class="language">Language</dt>
+                                    <dd class="language"></dd>
+                                    <dt class="type">Type</dt>
+                                    <dd class="type"></dd>
+                                    <dt class="group">Group</dt>
+                                    <dd class="group"><button id="test-button" class="btn btn-default btn-xs"></button></dd>
+                                    <dt class="size">Size</dt>
+                                    <dd class="size"></dd>
+                                    <dt class="toponym-list">Toponyms</dt>
+                                    <dd class="toponym-list small"></dd>                          
+                                </dl>
+                            </div>
+                        </div>
+<!--
+                        <div id="group-info-panel" class="panel panel-default">
+                            <div class="panel-heading">
+                                <button type="button" class="close" aria-hidden="true">&times;</button>
+                                <h4 class="small-margins"><span class="title"></span></br><small></small></h4>
+                            </div>
+                            <div class="panel-body">
+                                <dl class="dl-horizontal info-list">
+                                    <dt>Size</dt>
+                                    <dd class="size"></dd>
+                                    <dt>Toponyms</dt>
+                                    <dd class="toponym-list"></dd>
+                                </dl>
+                            </div>
+                        </div>
+-->
+                    </div>
+                    <div id="map-canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="left-column-element control-panel-container">
+                    <div class="list-control-panel">
+                        <button id="deselect-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-ban-circle" disabled></span></button>
+                    </div>
+                </td>
+            </tr>    
+            <tr>
+                <td class="left-column-element list-container">
+                    <div id="toponyms-list-container" class="list-holder">
+                        <div class="nano">
+                            <div class="content">
+                                <ul id="toponyms-list" class="list disable-select"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="groups-list-container" class="list-holder">
+                        <div class="nano">
+                            <div class="content">
+                                <ul id="groups-list" class="list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>    
+        </table>
+    </body>
+</html>
