@@ -10,11 +10,12 @@ import javax.ws.rs.core.Application;
  *
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
-@ApplicationPath("request")
+//@ApplicationPath("request")
 public class ToponymVisualizationDataRequestsService extends Application {
     private ImmutableSet<Object> singletons = ImmutableSet.<Object>of(
                                                                 new ToponymObjectFacadeREST(),
-                                                                new FormantFacadeREST());
+                                                                new FormantFacadeREST(),
+                                                                new StorageApp());
     
     @Override
     public Set<Object> getSingletons (){
