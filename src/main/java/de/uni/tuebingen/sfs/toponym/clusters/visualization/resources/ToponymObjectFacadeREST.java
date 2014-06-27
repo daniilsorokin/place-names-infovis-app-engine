@@ -1,13 +1,22 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.resources;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -47,8 +56,25 @@ public class ToponymObjectFacadeREST{
     
     @GET
     @Produces("application/json")
-    public List<ToponymObject> findAll() {
-        return new ArrayList<>();
+    public List<Entity> findAll() {
+        String listName = "toponymObjects";
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key toponymObjectListKey=  KeyFactory.createKey("ToponymObjectList", listName);
+        Query query = new Query("ToponymObject", toponymObjectListKey);
+        List<Entity> toponyms = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        return toponyms;
+    }
+    
+    @POST
+    @Path("new")
+    public Object addToponym(@QueryParam("name") String name){
+        String listName = "toponymObjects";
+        Key toponymObjectListKey = KeyFactory.createKey("ToponymObjectList", listName);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity toponym = new Entity("ToponymObject", toponymObjectListKey);
+        toponym.setProperty("name", name);
+        datastore.put(toponym);
+        return Response.ok().build();
     }
     
     @GET
