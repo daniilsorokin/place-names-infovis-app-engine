@@ -7,6 +7,11 @@
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>de.uni.tuebingen.sfs.toponym.clusters.visualization.services.ToponymVisualizationDataRequestsService</param-value>
         </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>org.foobar.rest.services;org.codehaus.jackson.jaxrs</param-value>    <!--  use jackson for JSON -->
+        </init-param>
+        <load-on-startup>1</load-on-startup>        
     </servlet>
 
     <servlet-mapping>
