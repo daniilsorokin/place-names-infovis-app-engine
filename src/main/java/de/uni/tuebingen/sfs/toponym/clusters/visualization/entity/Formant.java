@@ -22,6 +22,8 @@ public class Formant {
 
     public Formant(String formantName) {
         this.formantName = formantName;
+        this.affixList = new ArrayList<>();
+        this.toponymObjectList = new ArrayList<>();
     }
 
     public Integer getFormantNo() {

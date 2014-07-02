@@ -32,6 +32,8 @@ public class ToponymObject {
 
     public ToponymObject(String name) {
         this.name = name;
+        this.formant = new Formant("no formant");
+        this.toponymNo = 0;
     }
 
     public Integer getToponymNo() {

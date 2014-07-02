@@ -56,13 +56,17 @@ public class ToponymObjectFacadeREST{
     
     @GET
     @Produces("application/json")
-    public List<Entity> findAll() {
+    public List<ToponymObject> findAll() {
         String listName = "toponymObjects";
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Key toponymObjectListKey=  KeyFactory.createKey("ToponymObjectList", listName);
+        Key toponymObjectListKey =  KeyFactory.createKey("ToponymObjectList", listName);
         Query query = new Query("ToponymObject", toponymObjectListKey);
         List<Entity> toponyms = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        return toponyms;
+        List<ToponymObject> toponymsObjects = new ArrayList<>();
+        for (Entity entity : toponyms) {
+            toponymsObjects.add(new ToponymObject(entity.getProperty("name").toString()));
+        }
+        return toponymsObjects;
     }
     
     @POST

@@ -19,7 +19,15 @@ VIZAPP.dataInterface = function () {
                 doWithToponyms(VIZAPP.dummies.toponymObjects);
             } else if (type == "real") {
                 $.getJSON("request/toponymobject/", {}, function(data) {
-                    doWithToponyms(data.toponymObject);
+                    if (data instanceof Array){
+                        doWithToponyms(data);
+                    } else {
+                        var toponyms = data.toponymObject;
+                        if (!(toponyms instanceof Array)){
+                            toponyms = [toponyms]
+                        }
+                        doWithToponyms(toponyms);                    
+                    }
                 });
             }
         },
@@ -28,31 +36,47 @@ VIZAPP.dataInterface = function () {
                 doWithFormants(VIZAPP.dummies.formants);
             } else if (type == "real") {
                 $.getJSON("request/formant/", {}, function(data) {
-                    doWithFormants(data.formant);
+                    if (data instanceof Array){
+                        doWithFormants(data);
+                    } else {
+                        var formants = data.formant;
+                        if (!(formants instanceof Array)){
+                            formants = [formants]
+                        }
+                        doWithFormants(formants);                    
+                    }
                 });
             }
         },
         getToponymsSet: function(ids, doWithResults) {
             $.getJSON("request/toponymobject/set", {id: ids}, function(data) {
-                var toponyms = data.toponymObject;
-                if (!(toponyms instanceof Array)){
-                    toponyms = [toponyms]
+                if (data instanceof Array){
+                    doWithResults(data);
+                } else {
+                    var toponyms = data.toponymObject;
+                    if (!(toponyms instanceof Array)){
+                        toponyms = [toponyms]
+                    }
+                    doWithResults(toponyms);                    
                 }
-                doWithResults(toponyms);
             });
         },
         getToponym: function(id, doWithResults) {
             $.getJSON("request/toponymobject/"+id, function(data) {
                 doWithResults(data);
             });
-        },        
+        },
         getToponymsByFormant: function(id, doWithResults) {
             $.getJSON("request/formant/" + id + "/toponyms", function(data) {
-                var toponyms = data.toponymObject;
-                if (!(toponyms instanceof Array)){
-                    toponyms = [toponyms]
+                if (data instanceof Array){
+                    doWithResults(data);
+                } else {
+                    var toponyms = data.toponymObject;
+                    if (!(toponyms instanceof Array)){
+                        toponyms = [toponyms]
+                    }
+                    doWithResults(toponyms);                    
                 }
-                doWithResults(toponyms);
             });
         },
         getToponymIdsByFormant: function(id, doWithResults) {
