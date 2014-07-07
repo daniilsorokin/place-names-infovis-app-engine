@@ -7,9 +7,12 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,27 +66,70 @@ public class ToponymObjectFacadeREST{
         Query query = new Query("ToponymObject", toponymObjectListKey);
         List<Entity> toponyms = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
         List<ToponymObject> toponymsObjects = new ArrayList<>();
+        System.out.println("Query results size: " + toponyms.size());
         for (Entity entity : toponyms) {
-            toponymsObjects.add(new ToponymObject(entity.getProperty("name").toString()));
+            toponymsObjects.add(new ToponymObject(entity));
         }
         return toponymsObjects;
     }
     
     @POST
     @Path("new")
-    public Object addToponym(@QueryParam("name") String name){
+    public Response addToponym(@QueryParam("name") String name, @QueryParam("lat") double lat, @QueryParam("lng") double lng){
         String listName = "toponymObjects";
         Key toponymObjectListKey = KeyFactory.createKey("ToponymObjectList", listName);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity toponym = new Entity("ToponymObject", toponymObjectListKey);
         toponym.setProperty("name", name);
+        toponym.setProperty("lat", lat);
+        toponym.setProperty("lng", lng);
         datastore.put(toponym);
         return Response.ok().build();
     }
+
+    @POST
+    @Path("upload-json")
+    @Consumes("application/json")
+    public Response loadToponyms(List<ToponymObject> toponyms){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        String listName = "toponymObjects";
+        Key toponymObjectListKey = KeyFactory.createKey("ToponymObjectList", listName);
+        System.out.println("Loaded list size: " + toponyms.size());
+        System.out.println("Head: " + (toponyms.size() > 0 ? toponyms.get(0) : ""));
+        HashSet<Formant> formants = new HashSet<>();
+        ArrayList<Entity> toponymEnts = new ArrayList<>();
+        for (ToponymObject toponymObject : toponyms) {
+            Entity toponymEnt = new Entity("ToponymObject", toponymObjectListKey);
+            toponymEnt.setProperty("toponymNo", toponymObject.getToponymNo());
+            toponymEnt.setProperty("engName", toponymObject.getEnglishTransliteration());
+            toponymEnt.setProperty("name", toponymObject.getName());
+            toponymEnt.setProperty("lat", toponymObject.getLatitude());
+            toponymEnt.setProperty("lng", toponymObject.getLongitude());
+            toponymEnt.setProperty("type", toponymObject.getType());
+            Formant formant = toponymObject.getFormant();
+            formants.add(formant);
+            toponymEnt.setProperty("formantName", formant.getFormantName());
+            toponymEnt.setProperty("formantNo", formant.getFormantNo());
+            toponymEnts.add(toponymEnt);
+        }
+        datastore.put(toponymEnts);
+        
+        String listName2 = "formants";
+        Key formantsListKey = KeyFactory.createKey("FormantList", listName2);
+        ArrayList<Entity> formantEnts = new ArrayList<>();
+        for (Formant formant : formants) {
+            Entity formantEnt = new Entity("Formant", formantsListKey);
+            formantEnt.setProperty("formantName", formant.getFormantName());
+            formantEnt.setProperty("formantNo", formant.getFormantNo());
+            formantEnts.add(formantEnt);
+        }
+        datastore.put(formantEnts);
+        return Response.ok().build();
+    }  
     
     @GET
     @Path("name/{id}")
-    public String findName(@PathParam("id") Integer id) {
+    public String findName(@PathParam("id") Integer id){
         return "English transliteration";
     }   
 

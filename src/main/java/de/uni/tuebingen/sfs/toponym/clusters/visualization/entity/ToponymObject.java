@@ -1,15 +1,25 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
+import com.google.appengine.api.datastore.Entity;
+import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NAME;
+import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NO;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 @XmlRootElement
 public class ToponymObject {
+    public static final String T_KIND = "ToponymObject";
+    public static final String T_NO = "toponymNo";
+    public static final String T_ENG_NAME = "engName";
+    public static final String T_NAME = "name";
+    public static final String T_LATITUDE = "lat";
+    public static final String T_LONGITUDE = "lng";
+    public static final String T_TYPE = "type";    
+    
     private Integer toponymNo;
     private String name;
     private String otherNames;
@@ -36,6 +46,19 @@ public class ToponymObject {
         this.toponymNo = 0;
     }
 
+    public ToponymObject(Entity toponymEnt) {
+        this.toponymNo = ((Long) toponymEnt.getProperty(T_NO)).intValue();
+        this.englishTransliteration = (String) toponymEnt.getProperty(T_ENG_NAME);
+        this.name = (String) toponymEnt.getProperty(T_NAME);
+        this.latitude = (Double) toponymEnt.getProperty(T_LATITUDE);
+        this.longitude = (Double) toponymEnt.getProperty(T_LONGITUDE);
+        this.type = (String) toponymEnt.getProperty(T_TYPE);
+        this.formant = new Formant(
+                        ((Long) toponymEnt.getProperty(F_NO)).intValue(), 
+                        (String) toponymEnt.getProperty(F_NAME)
+                        );
+    }    
+    
     public Integer getToponymNo() {
         return toponymNo;
     }
@@ -146,7 +169,8 @@ public class ToponymObject {
 
     @Override
     public String toString() {
-        return "ToponymObject[ toponymNo=" + toponymNo + "  name=" + name + " ]";
+        return "ToponymObject[ toponymNo=" + toponymNo + "  name=" + name + 
+                " latitude=" + this.latitude + " longitude=" + this.longitude + " ]";
     }
 
 }

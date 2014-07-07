@@ -1,5 +1,16 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject.T_ENG_NAME;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -13,6 +24,10 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @XmlRootElement
 public class Formant {
+    public static final String F_NAME = "formantName";
+    public static final String F_NO = "formantNo";
+
+    
     private Integer formantNo;
     private String formantName;
     private List<String> affixList;
@@ -21,10 +36,23 @@ public class Formant {
     protected Formant() {}
 
     public Formant(String formantName) {
+        this(null, formantName);
+    }
+
+    public Formant(Integer formantNo, String formantName) {
+        this.formantNo = formantNo;
         this.formantName = formantName;
         this.affixList = new ArrayList<>();
         this.toponymObjectList = new ArrayList<>();
-    }
+    } 
+    
+    public Formant(Entity formantEnt) {
+        this.formantNo = ((Long) formantEnt.getProperty(F_NO)).intValue();
+        this.formantName = (String) formantEnt.getProperty(F_NAME);
+        this.affixList = new ArrayList<>();
+        this.toponymObjectList = new ArrayList<>();
+        
+    }       
 
     public Integer getFormantNo() {
         return formantNo;
@@ -62,10 +90,22 @@ public class Formant {
     
     @XmlElement(name = "toponymIds")
     public List<Integer> getToponymObjectIdList() {
+        String listName = "toponymObjects";
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key toponymObjectListKey =  KeyFactory.createKey("ToponymObjectList", listName);
+        Filter formantNoFilter = new FilterPredicate(F_NO,
+                                    FilterOperator.EQUAL,
+                                    this.formantNo);
+        Query query = new Query("ToponymObject", toponymObjectListKey)
+                .setFilter(formantNoFilter);
+        List<Entity> toponyms = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        
         List<Integer> toponymObjectIdList = new ArrayList<>();
-        for (ToponymObject toponymObject : toponymObjectList) {
-            toponymObjectIdList.add(toponymObject.getToponymNo());
-        }        
+        if(!toponyms.isEmpty()){
+            for (Entity toponym : toponyms) {
+                toponymObjectIdList.add( ((Long) toponym.getProperty(ToponymObject.T_NO)).intValue() );
+            }        
+        }
         return toponymObjectIdList;
     }
 

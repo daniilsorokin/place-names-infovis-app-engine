@@ -1,5 +1,12 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.resources;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
 import java.util.ArrayList;
@@ -59,7 +66,18 @@ public class FormantFacadeREST {
     @GET
     @Produces({"application/xml", "application/json"})
     public List<Formant> findAll() {
-        return new ArrayList<>();
+        String listName = "formants";
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key formantListKey =  KeyFactory.createKey("FormantList", listName);
+        Query query = new Query("Formant", formantListKey);
+        List<Entity> formantEnts = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+        List<Formant> formants = new ArrayList<>();
+        System.out.println("Query results size: " + formantEnts.size());
+        for (Entity entity : formantEnts) {
+            formants.add(new Formant(((Long) entity.getProperty("formantNo")).intValue(), 
+                    (String) entity.getProperty("formantName")));
+        }
+        return formants;
     }
 
     @GET
