@@ -228,7 +228,8 @@ VIZAPP.gui = function () {
                         $("h4 .title", $infoWindow).html(toponym.name);
                         $("h4 small", $infoWindow).html(toponym.englishTransliteration);
                         $("dd.latlng", $infoWindow).html(toponym.latitude + ", " + toponym.longitude);
-                        $("dd.language", $infoWindow).html(toponym.language.name);
+                        if (toponym.language !== undefiened) 
+                            $("dd.language", $infoWindow).html(toponym.language.name);
                         $("dd.type", $infoWindow).html(toponym.type.name);
                         $("dd.group button", $infoWindow).html(toponym.formant.formantName)
                             .off("click")
