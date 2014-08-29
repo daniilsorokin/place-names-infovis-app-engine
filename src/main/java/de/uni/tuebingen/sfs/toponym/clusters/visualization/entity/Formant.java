@@ -10,12 +10,14 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject.T_ENG_NAME;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.jsefa.csv.annotation.CsvDataType;
+import org.jsefa.csv.annotation.CsvField;
 
 
 /**
@@ -23,12 +25,14 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 @XmlRootElement
+@CsvDataType
 public class Formant {
     public static final String F_NAME = "formantName";
     public static final String F_NO = "formantNo";
 
     
-    private Integer formantNo;
+    private Long formantNo;
+    @CsvField(pos = 1)
     private String formantName;
     private List<String> affixList;
     private List<ToponymObject> toponymObjectList;
@@ -39,7 +43,7 @@ public class Formant {
         this(null, formantName);
     }
 
-    public Formant(Integer formantNo, String formantName) {
+    public Formant(Long formantNo, String formantName) {
         this.formantNo = formantNo;
         this.formantName = formantName;
         this.affixList = new ArrayList<>();
@@ -47,18 +51,27 @@ public class Formant {
     } 
     
     public Formant(Entity formantEnt) {
-        this.formantNo = ((Long) formantEnt.getProperty(F_NO)).intValue();
+        this.formantNo = formantEnt.getKey().getId();
         this.formantName = (String) formantEnt.getProperty(F_NAME);
         this.affixList = new ArrayList<>();
         this.toponymObjectList = new ArrayList<>();
         
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query1 = new Query("ToponymObject", formantEnt.getKey())
+                .setAncestor(formantEnt.getKey());
+        List<Entity> toponymObjectEnts = datastore.prepare(query1)
+                .asList(FetchOptions.Builder.withDefaults());
+        for (Entity toponymEnt : toponymObjectEnts) {
+            this.toponymObjectList.add(new ToponymObject(toponymEnt));
+        }
+        
     }       
 
-    public Integer getFormantNo() {
+    public Long getFormantNo() {
         return formantNo;
     }
 
-    public void setFormantNo(Integer formantNo) {
+    public void setFormantNo(Long formantNo) {
         this.formantNo = formantNo;
     }
 
@@ -89,44 +102,37 @@ public class Formant {
     }
     
     @XmlElement(name = "toponymIds")
-    public List<Integer> getToponymObjectIdList() {
-        String listName = "toponymObjects";
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Key toponymObjectListKey =  KeyFactory.createKey("ToponymObjectList", listName);
-        Filter formantNoFilter = new FilterPredicate(F_NO,
-                                    FilterOperator.EQUAL,
-                                    this.formantNo);
-        Query query = new Query("ToponymObject", toponymObjectListKey)
-                .setFilter(formantNoFilter);
-        List<Entity> toponyms = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        
-        List<Integer> toponymObjectIdList = new ArrayList<>();
-        if(!toponyms.isEmpty()){
-            for (Entity toponym : toponyms) {
-                toponymObjectIdList.add( ((Long) toponym.getProperty(ToponymObject.T_NO)).intValue() );
-            }        
-        }
+    public List<Long> getToponymObjectIdList() {
+        List<Long> toponymObjectIdList = new ArrayList<>();
+        for (ToponymObject toponymObject : toponymObjectList) {
+            toponymObjectIdList.add(toponymObject.getToponymNo());
+        }        
         return toponymObjectIdList;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (formantNo != null ? formantNo.hashCode() : 0);
+        int hash = 5;
+        hash = 73 * hash + Objects.hashCode(this.formantName);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Formant)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        Formant other = (Formant) object;
-        if ((this.formantNo == null && other.formantNo != null) || (this.formantNo != null && !this.formantNo.equals(other.formantNo))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Formant other = (Formant) obj;
+        if (!Objects.equals(this.formantName, other.formantName)) {
             return false;
         }
         return true;
     }
+
+    
 
     @Override
     public String toString() {

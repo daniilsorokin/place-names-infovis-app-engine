@@ -3,11 +3,11 @@
     <head>
         <title>Toponyms InfoVis Project</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-        <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false&libraries=geometry"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCu0d6lpgFSzznwCppY2HEoca4y1AM0Cow&v=3.exp&sensor=false&libraries=geometry"></script>
+        <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
         
         <script type="text/javascript" src="vendor/nanoscroller/jquery.nanoscroller.min.js"></script>
         <script type="text/javascript" src="vendor/kmeans/kmeans.js"></script>
@@ -29,13 +29,74 @@
     </head>
     <body>
         <table id="page-structure" class="page-structure disable-select">
-            <tr><td id="list-selector-container" class="left-column-element">
-                        <div id="list-selector" class="btn-group btn-group-sm">
-                            <button id="select-toponyms-btn" type="button" class="btn btn-primary" disabled>Toponyms</button>
-                            <button id="select-groups-btn" type="button" class="btn btn-primary" disabled>Groups</button>
+            <tr>
+                <td class="left-column" style="background-color: #d7d7d7; box-shadow: 0 0 4px #aaaaaa inset;">
+                    <div id="dataset-select-panel" class="sliding-panel left-column">
+                        <div class="wrapper">
+                            <h3>Select a dataset</h3>
+                            <div>
+                                <button id="delete-dataset-btn" class="small-button control-on-right">-</button>
+                                <button id="upload-dataset-btn" class="small-button control-on-right">+</button>
+                            </div>
+                            <div id="dataset-btn-list">
+                            </div>
+                            <div id="load-progress" class="stl-progress-bar simple-button dataset-btn center-block">
+                                <div class="stl-progress"></div>
+                            </div>
+                            <button id="confirm-delete-btn" class="simple-button control-on-right alert-grad">Delete selected</button>
                         </div>
+                        <div class="bg-info footer">
+                            <h4>You don't have to log in.</h4>
+                        </div>
+                    </div>
+                    <div id="dataset-work-panel" class="sliding-panel left-column">
+                        <table class="disable-select page-structure">
+                            <tr>
+                                <td id="list-selector-container" class="left-column">
+                                    <table style="width: 100%;"><tr>
+                                        <td style="width: 15%; padding: 2px">
+                                            <button id="back-to-dataset" class="control-btn btn btn-default btn-sm">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                            </button>
+                                        </td><td style="width: 70%; text-align: center">
+                                            <div id="list-selector" class="btn-group btn-group-sm">
+                                                <button id="select-toponyms-btn" type="button" class="btn btn-primary" disabled>Toponyms</button>
+                                                <button id="select-groups-btn" type="button" class="btn btn-primary" disabled>Groups</button>
+                                            </div>
+                                        </td><td style="width: 15%"></td>
+                                    </tr></table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left-column">
+                                    <div class="list-control-panel">
+                                        <input class="form-control control-btn input-sm pull-left" placeholder="Type for search" style="width: 50%; display: inline">
+                                        <button id="deselect-button" class="control-btn btn btn-info btn-sm pull-right"><span class="glyphicon glyphicon-ban-circle" disabled></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left-column list-container">
+                                    <div id="toponyms-list-container" class="list-holder">
+                                        <div class="nano">
+                                            <div class="content">
+                                                <ul id="toponyms-list" class="list disable-select"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="groups-list-container" class="list-holder">
+                                        <div class="nano">
+                                            <div class="content">
+                                                <ul id="groups-list" class="list"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </td>
-                <td rowspan="3">
+                <td>
                     <div id="info-window-container" class="info-window-container">
                         <div id="info-panel" class="panel panel-default">
                             <div class="panel-heading">
@@ -76,34 +137,30 @@
                         </div>
 -->
                     </div>
-                    <div id="map-canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px;"></div>
+                    <div id="map-canvas" style="width:100%; height:100%; margin:0px 0px; padding:0px; z-index: 1"></div>
                 </td>
-            </tr>
-            <tr>
-                <td class="left-column-element control-panel-container">
-                    <div class="list-control-panel">
-                        <button id="deselect-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-ban-circle" disabled></span></button>
-                    </div>
-                </td>
-            </tr>    
-            <tr>
-                <td class="left-column-element list-container">
-                    <div id="toponyms-list-container" class="list-holder">
-                        <div class="nano">
-                            <div class="content">
-                                <ul id="toponyms-list" class="list disable-select"></ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="groups-list-container" class="list-holder">
-                        <div class="nano">
-                            <div class="content">
-                                <ul id="groups-list" class="list"></ul>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>    
+            </tr>  
         </table>
+        <div id="load-file-modal" class="full-alert">
+            <div id="data-type-options" class="simple-block-justified">
+                <div class="simple-block-justified">
+                    <button id="csv-button" class="simple-button selected">CSV</button>
+                </div>
+                <div class="simple-block-justified">
+                    <button id="tsv-button" class="simple-button">TSV</button>
+                </div>
+            </div>
+            <div id="select-dataset-file" class="select-area">
+                <span>Select file</span>
+            </div>
+            <div>
+                <input id="dataset-file" name="dataset-file" type="file" style="display:none" />
+                <input id="name-dataset" class="input-text" style="width:100%" type="text" placeholder="Type the dataset name" />
+            </div>
+            <div style="margin-top: 15px;">
+                <button id="load-button" class="simple-button" style="width:40%; color: #0066CC">Load</button>
+                <button id="cancel-button" class="simple-button" style="width:40%;">Cancel</button>
+            </div>
+        </div>
     </body>
 </html>

@@ -4,13 +4,17 @@ import com.google.appengine.api.datastore.Entity;
 import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NAME;
 import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NO;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.jsefa.csv.annotation.CsvDataType;
+import org.jsefa.csv.annotation.CsvField;
 
 /**
  * @author Daniil Sorokin <daniil.sorokin@uni-tuebingen.de>
  */
 @XmlRootElement
+@CsvDataType
 public class ToponymObject {
     public static final String T_KIND = "ToponymObject";
     public static final String T_NO = "toponymNo";
@@ -18,17 +22,23 @@ public class ToponymObject {
     public static final String T_NAME = "name";
     public static final String T_LATITUDE = "lat";
     public static final String T_LONGITUDE = "lng";
-    public static final String T_TYPE = "type";    
+    public static final String T_TYPE = "type";
+    public static final String T_LANGUAGE = "language";
     
-    private Integer toponymNo;
+    private Long toponymNo;
+    @CsvField(pos = 1)
     private String name;
     private String otherNames;
     private String englishTransliteration;    
+    @CsvField(pos = 2)
     private Double latitude;
+    @CsvField(pos = 3)
     private Double longitude;
     private List<String> affixList;
     private String type;
+    @CsvField(pos = 5)
     private String language;
+    @CsvField(pos = 4)
     private Formant formant;
     private String dataset;
     
@@ -43,27 +53,27 @@ public class ToponymObject {
     public ToponymObject(String name) {
         this.name = name;
         this.formant = new Formant("no formant");
-        this.toponymNo = 0;
     }
 
     public ToponymObject(Entity toponymEnt) {
-        this.toponymNo = ((Long) toponymEnt.getProperty(T_NO)).intValue();
-        this.englishTransliteration = (String) toponymEnt.getProperty(T_ENG_NAME);
+        this.toponymNo = toponymEnt.getKey().getId();
         this.name = (String) toponymEnt.getProperty(T_NAME);
         this.latitude = (Double) toponymEnt.getProperty(T_LATITUDE);
         this.longitude = (Double) toponymEnt.getProperty(T_LONGITUDE);
-        this.type = (String) toponymEnt.getProperty(T_TYPE);
-        this.formant = new Formant(
-                        ((Long) toponymEnt.getProperty(F_NO)).intValue(), 
-                        (String) toponymEnt.getProperty(F_NAME)
-                        );
+        this.language = (String) toponymEnt.getProperty(T_LANGUAGE);
+        this.formant = new Formant(toponymEnt.getParent().getId(),"");
+        
+        this.type = "";
+        this.dataset = "";
+        this.otherNames = "";
+        this.englishTransliteration = "";
     }    
     
-    public Integer getToponymNo() {
+    public Long getToponymNo() {
         return toponymNo;
     }
 
-    public void setToponymNo(Integer toponymNo) {
+    public void setToponymNo(Long toponymNo) {
         this.toponymNo = toponymNo;
     }
 
@@ -150,22 +160,35 @@ public class ToponymObject {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (toponymNo != null ? toponymNo.hashCode() : 0);
+        int hash = 3;
+        hash = 31 * hash + Objects.hashCode(this.name);
+        hash = 31 * hash + Objects.hashCode(this.latitude);
+        hash = 31 * hash + Objects.hashCode(this.longitude);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof ToponymObject)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        ToponymObject other = (ToponymObject) object;
-        if ((this.toponymNo == null && other.toponymNo != null) || (this.toponymNo != null && !this.toponymNo.equals(other.toponymNo))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ToponymObject other = (ToponymObject) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.latitude, other.latitude)) {
+            return false;
+        }
+        if (!Objects.equals(this.longitude, other.longitude)) {
             return false;
         }
         return true;
     }
+
+
 
     @Override
     public String toString() {

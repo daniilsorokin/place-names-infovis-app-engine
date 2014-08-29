@@ -15,6 +15,7 @@ public class ToponymVisualizationDataRequestsService extends Application {
     private ImmutableSet<Object> singletons = ImmutableSet.<Object>of(
                                                                 new ToponymObjectFacadeREST(),
                                                                 new FormantFacadeREST(),
+                                                                new DatasetFacadeREST(),
                                                                 new StorageApp());
     
     @Override

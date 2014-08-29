@@ -74,8 +74,7 @@ public class FormantFacadeREST {
         List<Formant> formants = new ArrayList<>();
         System.out.println("Query results size: " + formantEnts.size());
         for (Entity entity : formantEnts) {
-            formants.add(new Formant(((Long) entity.getProperty("formantNo")).intValue(), 
-                    (String) entity.getProperty("formantName")));
+            formants.add(new Formant((String) entity.getProperty("formantName")));
         }
         return formants;
     }
