@@ -1,8 +1,6 @@
 package de.uni.tuebingen.sfs.toponym.clusters.visualization.entity;
 
 import com.google.appengine.api.datastore.Entity;
-import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NAME;
-import static de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant.F_NO;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,6 +22,7 @@ public class ToponymObject {
     public static final String T_LONGITUDE = "lng";
     public static final String T_TYPE = "type";
     public static final String T_LANGUAGE = "language";
+    public static final String T_FORMANT_NAME = "formantName";
     
     private Long toponymNo;
     @CsvField(pos = 1)
@@ -61,7 +60,8 @@ public class ToponymObject {
         this.latitude = (Double) toponymEnt.getProperty(T_LATITUDE);
         this.longitude = (Double) toponymEnt.getProperty(T_LONGITUDE);
         this.language = (String) toponymEnt.getProperty(T_LANGUAGE);
-        this.formant = new Formant(toponymEnt.getParent().getId(),"");
+        this.formant = new Formant(toponymEnt.getParent().getId(),
+                (String) toponymEnt.getProperty(T_FORMANT_NAME));
         
         this.type = "";
         this.dataset = "";

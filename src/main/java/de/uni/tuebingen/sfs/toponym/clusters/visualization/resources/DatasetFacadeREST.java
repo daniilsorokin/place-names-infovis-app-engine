@@ -8,6 +8,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Dataset;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
@@ -127,16 +130,21 @@ public class DatasetFacadeREST {
     @GET
     @Produces({"application/xml", "application/json"})
     public List<Dataset> findAll() {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Key datasetListKey =  KeyFactory.createKey("DatasetList", LIST_NAME);
-        Query query = new Query("Dataset", datasetListKey);
-        List<Entity> datasetsEntities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-        List<Dataset> datasets = new ArrayList<>();
-        System.out.println("Query results size: " + datasetsEntities.size());
-        for (Entity entity : datasetsEntities) {
-            datasets.add(new Dataset(entity));
+        UserService userService = UserServiceFactory.getUserService();
+        User currentUser = userService.getCurrentUser();
+        if (currentUser != null) {
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            Key datasetListKey =  KeyFactory.createKey("DatasetList", LIST_NAME);
+            Query query = new Query("Dataset", datasetListKey);
+            List<Entity> datasetsEntities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+            List<Dataset> datasets = new ArrayList<>();
+            System.out.println("Query results size: " + datasetsEntities.size());
+            for (Entity entity : datasetsEntities) {
+                datasets.add(new Dataset(entity));
+            }
+            return datasets;
         }
-        return datasets;
+        return new ArrayList<>();
     }
 
     @GET
@@ -174,6 +182,11 @@ public class DatasetFacadeREST {
     @Consumes("text/plain")
     public Response loadToponyms(String toponymsAsCsv, @PathParam("name") String datasetName,
             @PathParam("type") String type){
+        
+        UserService userService = UserServiceFactory.getUserService();
+        User currentUser = userService.getCurrentUser();
+        if(currentUser == null) return Response.ok().build();
+        
         CsvConfiguration csvConfiguration = new CsvConfiguration();
         switch(type.toLowerCase()) {
             default:
@@ -225,6 +238,7 @@ public class DatasetFacadeREST {
                 toponymEnt.setProperty(ToponymObject.T_LONGITUDE, toponymObject.getLongitude());
                 if (toponymObject.getLanguage() != null)
                     toponymEnt.setProperty(ToponymObject.T_LANGUAGE, toponymObject.getLanguage());
+                toponymEnt.setProperty(ToponymObject.T_FORMANT_NAME, formant.getFormantName());
                 toAdd.add(toponymEnt);
             }
         }

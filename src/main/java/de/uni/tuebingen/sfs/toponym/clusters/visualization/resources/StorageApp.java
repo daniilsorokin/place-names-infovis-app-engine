@@ -36,5 +36,27 @@ public class StorageApp {
                     ))).build();
         }
     }
+
+    @GET
+    @Path("login")
+    public Response logIn(@Context HttpServletRequest req) throws URISyntaxException {
+        UserService userService = UserServiceFactory.getUserService();
+        return Response.temporaryRedirect(new URI(
+                userService.createLoginURL(
+                        "/"
+                ))).build();
+    }
+
+    
+    @GET
+    @Path("get-user")
+    public Response getLoggedUserName() throws URISyntaxException {
+        UserService userService = UserServiceFactory.getUserService();
+        User currentUser = userService.getCurrentUser();
+        if (currentUser != null)
+            return Response.ok(currentUser.getNickname()).build();
+        else
+            return Response.ok().build();
+    }
     
 }
