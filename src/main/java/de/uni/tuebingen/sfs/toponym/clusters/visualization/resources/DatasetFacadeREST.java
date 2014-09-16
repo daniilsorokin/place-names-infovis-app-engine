@@ -16,20 +16,12 @@ import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -206,10 +198,10 @@ public class DatasetFacadeREST {
         Key datasetListKey =  KeyFactory.createKey("DatasetList", LIST_NAME);
         Entity datasetEntity = new Entity("Dataset", datasetListKey);
         datasetEntity.setProperty(Dataset.D_NAME, datasetName);
-        datastore.put(datasetEntity);
+        
         HashMap<Formant,List<ToponymObject>> formants = new HashMap<>();
         Formant noFormant = new Formant("no formant");
-        
+        Integer fsize = 0, tsize = 0;
         while (deserializer.hasNext()) {
             ToponymObject t = deserializer.next();
             if (t.getFormant() == null) 
@@ -220,9 +212,13 @@ public class DatasetFacadeREST {
                 ArrayList<ToponymObject> toPut = new ArrayList<>();
                 toPut.add(t);
                 formants.put(t.getFormant(), toPut);
-                
+                fsize++;
             }
+            tsize++;
         }
+        datasetEntity.setProperty(Dataset.D_TSIZE, tsize);
+        datasetEntity.setProperty(Dataset.D_FSIZE, fsize);
+        datastore.put(datasetEntity);
         System.out.println("Loaded formants: " + formants.size());
         ArrayList<Entity> toAdd = new ArrayList<>();
         for (Map.Entry<Formant, List<ToponymObject>> entry : formants.entrySet()) {

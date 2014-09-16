@@ -5,10 +5,13 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import static de.uni.tuebingen.sfs.toponym.clusters.visualization.resources.DatasetFacadeREST.LIST_NAME;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -21,12 +24,16 @@ public class Dataset {
     public static final String D_NO = "datasetNo";
     public static final String D_NAME = "name";
     public static final String D_INFO = "info";
+    public static final String D_TSIZE = "tsize";
+    public static final String D_FSIZE = "fsize";
 
     private Long datasetNo;
     private String name;
     private String info;
-    private List<ToponymObject> toponymObjectList;
-    private List<Formant> formantList;
+    private List<ToponymObject> toponymObjectList = null;
+    private List<Formant> formantList = null;
+    private Integer sizeToponyms = 0;
+    private Integer sizeFormants = 0;
 
     protected Dataset() {
     }
@@ -46,26 +53,8 @@ public class Dataset {
         this.datasetNo = datasetEntity.getKey().getId();
         this.info = "";
         this.name = (String) datasetEntity.getProperty(D_NAME);
-        
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-        this.toponymObjectList = new ArrayList<>();
-        Query query1 = new Query("ToponymObject", datasetEntity.getKey())
-                .setAncestor(datasetEntity.getKey());
-        List<Entity> toponymObjectEnts = datastore.prepare(query1)
-                .asList(FetchOptions.Builder.withDefaults());
-        for (Entity toponymEnt : toponymObjectEnts) {
-            this.toponymObjectList.add(new ToponymObject(toponymEnt));
-        }
-        
-        this.formantList = new ArrayList<>();
-        Query query2 = new Query("Formant", datasetEntity.getKey())
-                .setAncestor(datasetEntity.getKey());
-        List<Entity> formantEnts = datastore.prepare(query2)
-                .asList(FetchOptions.Builder.withDefaults());
-        for (Entity formantEnt : formantEnts) {
-            this.formantList.add(new Formant(formantEnt));
-        }
+        this.sizeToponyms = ((Long) datasetEntity.getProperty(D_TSIZE)).intValue();
+        this.sizeFormants = ((Long) datasetEntity.getProperty(D_FSIZE)).intValue();
     }    
 
     public Long getDatasetNo() {
@@ -94,6 +83,19 @@ public class Dataset {
 
     @XmlTransient
     public List<ToponymObject> getToponymObjectList() {
+        if(this.toponymObjectList == null) {
+            Key datasetListKey =  KeyFactory.createKey("DatasetList", LIST_NAME);
+            Key datasetKey = KeyFactory.createKey(datasetListKey, "Dataset", this.datasetNo);
+            
+            this.toponymObjectList = new ArrayList<>();
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            Query query1 = new Query("ToponymObject", datasetKey);
+            List<Entity> toponymObjectEnts = datastore.prepare(query1)
+                    .asList(FetchOptions.Builder.withDefaults());
+            for (Entity toponymEnt : toponymObjectEnts) {
+                this.toponymObjectList.add(new ToponymObject(toponymEnt));
+            }
+        }
         return toponymObjectList;
     }
 
@@ -101,14 +103,37 @@ public class Dataset {
         this.toponymObjectList = toponymObjectList;
     }
     
+    @XmlElement(name = "toponyms")
+    public int getToponumObjectListSize(){
+        return this.sizeToponyms;
+    }
+    
     @XmlTransient
     public List<Formant> getFormantList() {
+        if(this.formantList == null){
+            Key datasetListKey =  KeyFactory.createKey("DatasetList", LIST_NAME);
+            Key datasetKey = KeyFactory.createKey(datasetListKey, "Dataset", this.datasetNo);
+            
+            this.formantList = new ArrayList<>();
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            Query query2 = new Query("Formant", datasetKey);
+            List<Entity> formantEnts = datastore.prepare(query2)
+                    .asList(FetchOptions.Builder.withDefaults());
+            for (Entity formantEnt : formantEnts) {
+                this.formantList.add(new Formant(formantEnt));
+            }
+        }
         return formantList;
     }
 
     public void setFormantList(List<Formant> formantList) {
         this.formantList = formantList;
     }    
+
+    @XmlElement(name = "formants")
+    public int getFormantListSize(){
+        return this.sizeFormants;
+    }
     
     public void addToponymObjectToList(ToponymObject t){
         if (this.toponymObjectList == null)
