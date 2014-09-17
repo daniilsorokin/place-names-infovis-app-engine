@@ -56,15 +56,6 @@ public class Formant {
         this.formantName = (String) formantEnt.getProperty(F_NAME);
         this.affixList = new ArrayList<>();
         this.toponymObjectList = new ArrayList<>();
-        
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query1 = new Query("ToponymObject", formantEnt.getKey());
-        List<Entity> toponymObjectEnts = datastore.prepare(query1)
-                .asList(FetchOptions.Builder.withDefaults());
-        for (Entity toponymEnt : toponymObjectEnts) {
-            this.toponymObjectList.add(new ToponymObject(toponymEnt));
-        }
-        
     }       
 
     public Long getFormantNo() {

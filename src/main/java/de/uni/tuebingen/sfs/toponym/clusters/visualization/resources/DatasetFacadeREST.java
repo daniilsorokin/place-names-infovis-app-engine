@@ -11,7 +11,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.sun.jersey.api.json.JSONConfiguration;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Dataset;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.Formant;
 import de.uni.tuebingen.sfs.toponym.clusters.visualization.entity.ToponymObject;
@@ -30,7 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import org.codehaus.jettison.json.JSONArray;
 import org.jsefa.Deserializer;
 import org.jsefa.csv.CsvIOFactory;
 import org.jsefa.csv.config.CsvConfiguration;
@@ -228,7 +226,7 @@ public class DatasetFacadeREST {
             Formant formant = entry.getKey();
             Entity formantEnt = new Entity("Formant", datasetEntity.getKey());
             formantEnt.setProperty(Formant.F_NAME, formant.getFormantName());
-            JSONArray jsonArray = new JSONArray();
+            datastore.put(formantEnt);
             List<ToponymObject> list = entry.getValue();
             for (ToponymObject toponymObject : list) {
                 Entity toponymEnt = new Entity("ToponymObject", formantEnt.getKey());
@@ -239,11 +237,7 @@ public class DatasetFacadeREST {
                     toponymEnt.setProperty(ToponymObject.T_LANGUAGE, toponymObject.getLanguage());
                 toponymEnt.setProperty(ToponymObject.T_FORMANT_NAME, formant.getFormantName());
                 toAdd.add(toponymEnt);
-                jsonArray.put(toponymEnt.getKey().getId());
             }
-            System.out.println("jsonArray:" + jsonArray.toString());
-            formantEnt.setProperty(Formant.F_TIDS, jsonArray.toString());
-            datastore.put(formantEnt);
         }
         datastore.put(toAdd);
         return Response.ok().build();
