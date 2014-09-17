@@ -29,6 +29,7 @@ import org.jsefa.csv.annotation.CsvField;
 public class Formant {
     public static final String F_NAME = "formantName";
     public static final String F_NO = "formantNo";
+    public static final String F_TIDS = "toponymIds";
 
     
     private Long formantNo;
@@ -57,8 +58,7 @@ public class Formant {
         this.toponymObjectList = new ArrayList<>();
         
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query1 = new Query("ToponymObject", formantEnt.getKey())
-                .setAncestor(formantEnt.getKey());
+        Query query1 = new Query("ToponymObject", formantEnt.getKey());
         List<Entity> toponymObjectEnts = datastore.prepare(query1)
                 .asList(FetchOptions.Builder.withDefaults());
         for (Entity toponymEnt : toponymObjectEnts) {
