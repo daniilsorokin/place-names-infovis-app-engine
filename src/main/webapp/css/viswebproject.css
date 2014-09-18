@@ -185,10 +185,7 @@ div.mousescroll {
 
 .dataset-btn {
     width: 180px !important;
-    height: 30px !important;
-    
-    margin-top: 5px;
-    
+    margin: 5px 0;
     display: block;
 }
 
@@ -208,14 +205,14 @@ div.mousescroll {
 }
 
 .footer {
+    display: none;
+    
     height: 75px;
     margin-top: -75px;
     
     padding: 5px;
     
     border-top: 1px solid #a4d3ef;
-/*    box-shadow: 0 -2px -4px 0px #aaaaaa;
-    border-collapse: collapse;*/
 }
 
 .control-on-right {
@@ -269,7 +266,7 @@ div.mousescroll {
 
 
 .simple-button {
-    height: 30px;
+    height: 30px !important;
     
     padding: 4px 7px;
 
@@ -439,13 +436,11 @@ div.mousescroll {
 
 .stl-progress-bar {
     padding: 0px;
-    height: 24pt;
-    
     overflow: hidden;
 }
 
 .stl-progress {
-    height: 100%;
+    height: 30px;
     width: 30px;
     
     padding: 4pt;
@@ -504,6 +499,32 @@ div.mousescroll {
     cursor: pointer;
 }
 
+.wait-circle {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.wait-circle .circle {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    
+    border-radius: 30px;
+    border: 5px solid #028ac8;
+    clip: rect(0,15px,30px,0);
+}
+
+.wait-circle .circle.alert {
+    border: 0px;
+    clip: rect(0,30px,30px,0);
+    background: -webkit-linear-gradient(#fe2a31, #cd0108); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#fe2a31, #cd0108); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#fe2a31, #cd0108); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#fe2a31, #cd0108); /* Standard syntax */        
+}
+
 /* particular elements (based on id) */
 #list-selector-container { 
     text-align: center;
@@ -515,4 +536,8 @@ div.mousescroll {
     padding: 3px 5px;
     text-align: center;
     vertical-align: middle;
+}
+
+#login-info {
+    display: none;
 }
