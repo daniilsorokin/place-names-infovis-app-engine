@@ -5,7 +5,7 @@
 */
 
 /* elements */
-root { display: block;}
+/*root { display: block;}*/
 html,body{ margin:0; padding:0; height:100%; border:none}
 table {margin: 0px; padding:0px;}
 tr {margin: 0px; padding:0px;}
@@ -23,17 +23,6 @@ table.page-structure {
     overflow: hidden;
     z-index: 3;
     position: absolute;
-}
-
-div.mousescroll {
-    height: 100%; 
-
-    position: relative;
-
-    text-align: center;
-
-    overflow-y: scroll;
-    overflow:-moz-scrollbars-vertical; 
 }
 
 .disable-select {
@@ -66,10 +55,6 @@ div.mousescroll {
     position: relative;
 }
 
-
-.list .ui-selecting { border-color: #0066CC; }
-.list .ui-selected { background: #0066CC; color: white; }
-
 .list-container {
      height: 100%;
      position: relative;
@@ -80,21 +65,27 @@ div.mousescroll {
     width: 100%;
     padding: 4px;
 
-    text-align: left;
-    vertical-align: middle;
-    display: table-cell;
+    display: table;
     
     border-bottom: 1px solid #cecece;
+}
+.list-control-panel div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .list-control-panel.extend-control {
     position: absolute;
     top: 41px;
     height: 40px !important;
-    padding: 6px;
     
     z-index: 6;
     background-color: white;
+}
+.list-control-panel.extend-control div {
+    padding: 6px;
+    text-align: left;
 }
 
 .dataset-control-panel {
@@ -114,9 +105,6 @@ div.mousescroll {
 
 .list-selector.selected {
     opacity: 1.0;
-}
-
-.control-panel-container {
 }
 
 .list-holder {
@@ -145,10 +133,6 @@ div.mousescroll {
 .group-badge {
     position: absolute;
     right: 40px;
-}
-
-.element-info-btn {
-    margin: 1px;
 }
 
 .info-window-container .panel {
@@ -212,42 +196,26 @@ div.mousescroll {
     display: block;
 }
 
-
-.control-btn {
-    margin: 3px;
-    padding: 8px 8px;
-}
-
 .wrapper {
     position: relative;
     height: 100%;
     
     margin: 0 auto 0;
     padding: 0 30px;
-        
+        z-index: 5;
     text-align: center;
 }
 
 .footer {
-    display: none;
-    
-    height: 75px;
-    margin-top: -75px;
+    /*display: none;*/
+    position: relative;
+    height: 90px;
+    top: -90px;
     
     padding: 5px;
-    
+    z-index: 6;
     border-top: 1px solid #a4d3ef;
 }
-
-.control-on-right {
-    float: right;
-}
-
-.control-on-left {
-    float: left;
-    margin: 7px 5px;
-}
-
 
 /* Buttons and Blocks */
 .small-button {
@@ -287,6 +255,10 @@ div.mousescroll {
     font-weight: bold;    
     color: white;
     background-color: #00afff;
+}
+.small-button.pointed:before {
+    content: "\26AB ";
+    color: #00afff;
 }
 .simple-button.selected {
     font-weight: bold;
@@ -333,7 +305,7 @@ div.mousescroll {
 /* Modal area and Input */
 .full-alert {
     width: 400px !important;
-    height: 250px !important;
+    height: 270px !important;
     
     position: absolute;
     top: 20%;
@@ -446,24 +418,48 @@ div.mousescroll {
     cursor: pointer;
 }
 
+.example-table {
+    border: 1px solid #aaaaaa;
+    font-size: 10pt;
+    background-color: white;
+}
+.example-table *{
+    border: 1px solid #aaaaaa;
+    padding: 4px;
+}
+
+.small-info-area {
+    text-align: right;
+    margin: 4px;
+}
+.info-link {
+    color: #1d9efe;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* List manipulation */ 
 
 .dynamic-button {
     position: relative;
-    margin: 0px 3px;
+    margin: 0px 3px 0px 0px;
     padding: 5px 10px 5px 5px;
     
     font-size: 10pt;
     cursor: default;
     overflow: hidden;
-    border-width: 0px 0px 1px 0px;
+    
+    border-style: solid;
+    border-width: 0px 0px 1px 3px;
+    border-bottom-color: #aaaaaa;
+    border-left-color: white; 
 }
-.dynamic-button:hover { border-color: #028ac8; background-color: #cecece;}
-
+.dynamic-button:hover { border-left-color: #a4d3ef; }
+.dynamic-button.ui-selecting { border-left-color: #a4d3ef; }
 .dynamic-button.selected {
     font-weight: bold;
     color: white;
-    border-width: 0px;
+    border-bottom-width: 0px;
     padding-bottom: 6px;
 }
 
@@ -487,9 +483,6 @@ div.mousescroll {
 }
 
 .info-trigger {
-    position: absolute;
-    right: 15px;
-    
     height: 15px;
     width: 15px;
     
@@ -498,11 +491,11 @@ div.mousescroll {
     line-height: 1;
     text-align: center;
     
-    visibility: hidden;
     cursor: pointer;
     color: #028ac8;
     border-radius: 15px;
     border: 1px solid #028ac8;
 }
+.info-trigger.to-right { position: absolute; right: 15px;}
 .info-trigger:before { content: "i"; }
-.info-trigger.triggered { visibility: visible; }
+.info-trigger.triggered { visibility: visible;}

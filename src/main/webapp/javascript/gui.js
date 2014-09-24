@@ -120,7 +120,8 @@ VIZAPP.myMap = function () {
         zoomControlOptions: {style: google.maps.ZoomControlStyle.SMALL, position: google.maps.ControlPosition.RIGHT_BOTTOM},
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
-    var infoWindow = new google.maps.InfoWindow();
+    var infoWindow = new google.maps.InfoWindow({maxWidth: 200});
+    var infoIsOn = null;
     var markers = {};
     var polygons = {};
     
@@ -163,6 +164,11 @@ VIZAPP.myMap = function () {
                 google.maps.event.addListener(marker, 'mouseout', function() {
                     $(map.getDiv()).removeAttr("title");
                 });
+                google.maps.event.addListener(marker, 'click', function() {
+                    infoWindow.setContent("<div style='min-width: 100px'>" + toponym.name + "</div>");
+                    infoWindow.open(map,new google.maps.Marker({position:latlng }));
+                    infoIsOn = toponym;
+                });
             }
             markers[toponym.toponymNo].setMap(map);
         },
@@ -180,6 +186,9 @@ VIZAPP.myMap = function () {
         hideMarker: function (toponym) {
             if (markers[toponym.toponymNo]) {
                 markers[toponym.toponymNo].setMap(null);
+            }
+            if(infoIsOn === toponym) {
+                infoWindow.close();
             }
         },
 
@@ -281,6 +290,7 @@ VIZAPP.model = function () {
         this.type = data.type !== undefined ? data.type.name : null;
         this.formantName = data.formant !== undefined ? data.formant.formantName : null;
         this.formantNo = data.formant !== undefined ? data.formant.formantNo : null;
+        this.formant = null;
         this.othernames = data.englishTransliteration;
         /* default color */
         this.color = "#0066CC";
@@ -304,6 +314,7 @@ VIZAPP.model = function () {
         self.color = colorGenerator.generateNextColor();
         $.each(self.toponyms, function(index, toponym){
             toponym.color = self.color;
+            toponym.formant = self;
         });
 
         self.selectedTops = ko.computed(function(){
@@ -331,7 +342,7 @@ VIZAPP.model = function () {
         
         ko.bindingHandlers.selectableList = {
             init: function(element, valueAccessor){
-                $(element).selectable({filter:"li", cancel:".info-trigger"});
+                $(element).selectable({filter:"li", cancel:".info-trigger", distance: 20 });
                 $(element).on( "selectableselected", function( event, ui ) {
                     var item = ko.dataFor(ui.selected);
                     item.selected(true);
@@ -339,6 +350,10 @@ VIZAPP.model = function () {
                 $(element).on( "selectableunselected", function( event, ui ) {
                     var item = ko.dataFor(ui.unselected);
                     item.selected(false);
+                });
+                $(element).on( "dblclick", "li", function(event) {
+                    var item = ko.dataFor(this);
+                    self.toggleInfoWindow(item, event);
                 });
             }
         };
@@ -350,7 +365,8 @@ VIZAPP.model = function () {
             update: function(element, valueAccessor){
                 if(!valueAccessor()) 
                     $(".info-trigger",  $(element)).fadeTo(200, 0, function(){ $(this).css({visibility: 'hidden', opacity: 1}); }); 
-
+                else
+                    $(".info-trigger",  $(element)).css('visibility', 'visible');
             }
         };
         ko.bindingHandlers.turnHalfCircle = {
@@ -459,7 +475,7 @@ VIZAPP.model = function () {
                              {titleasc:"Last letter &#9650;", titledes:"Last letter &#9660;", key:"rname", asc:ko.observable(true)}];
         self.fsortHeaders = [{titleasc:"First letter &#9650;", titledes:"First letter &#9660;", key:"name", asc:ko.observable(true)},
                              {titleasc:"Last letter &#9650;", titledes:"Last letter &#9660;", key:"rname", asc:ko.observable(true)},
-                            {titleasc:"Size &#9650;", titledes:"Size &#9660;", key:"size", asc:ko.observable(true)}];
+                            {titleasc:"Size &#9650;", titledes:"Size &#9660;", key:"size", asc:ko.observable(false)}];
         self.tactiveSort = ko.observable(self.tsortHeaders[0]);
         self.factiveSort = ko.observable(self.fsortHeaders[0]);
         self.sortListBy = function(list, header, setActiveSort){
@@ -475,9 +491,8 @@ VIZAPP.model = function () {
         self.sortOptions = ko.observable(false);
         self.toggleSortOptions = function() {
             self.sortOptions(!self.sortOptions());
-//            $("#toponyms-list-container .extend-control").show("slide", {easing:"easeOutExpo", direction: "up", duration: 200 });
         };
-
+        
         self.sideInfoWindow = ko.observable(null);
         
         self.toggleInfoWindow = function(infoItem, e) {
@@ -648,16 +663,33 @@ VIZAPP.gui = function () {
 
             
             $("#upload-dataset-btn").click(function(){
+                $("#dataset-select-panel button").attr("disabled", "disabled");
                 $("#load-file-modal").show("drop", {easing:"easeOutExpo", direction: "up", duration: 400 });
             }); 
             
             $("#cancel-button").click(function(){
+                $("#dataset-select-panel button").removeAttr("disabled");
                 $("#load-file-modal").hide("drop", {easing:"easeInExpo", direction: "up", duration: 200 });
             });
             
             $("#load-file-modal").hide();
+            $("#file-info-modal").hide();
             $("#load-progress").hide();
+            $("#developer-info").hide();
             $("#confirm-delete-btn").hide();
+            
+            $("#developers-info-link").click(function(){
+                $("#developer-info").show("drop", {easing:"easeOutExpo", direction: "down", duration: 400 });
+            });
+            $("#developer-info button").click(function(){
+                $("#developer-info").hide("drop", {easing:"easeInExpo", direction: "down", duration: 200 });
+            });
+            $("#about-format-link").click(function(){
+                $("#file-info-modal").show("drop", {easing:"easeOutExpo", direction: "down", duration: 200 });
+            });
+            $("#file-info-modal button").click(function(){
+                $("#file-info-modal").hide("drop", {easing:"easeInExpo", direction: "down", duration: 200 });
+            });
            
             $("#load-button").click(function(){
                 var selectedFile = $("#dataset-file")[0].files[0];
@@ -713,15 +745,16 @@ VIZAPP.gui = function () {
                     .show("slide", {easing:"easeOutExpo", direction: "left", duration: 400 });
                         
             if(VIZAPP.isLoginRequired){
+                $("#delete-dataset-btn").hide();
                 $.ajax({
                     url: "request/storage/get-user/",
                     type: 'GET',
                     success: function(answer){
-                        $("#dataset-select-panel .footer").show();
+                        $("#dataset-select-panel .footer h5").show();
                         if(answer) {
                             $("#login-info").hide();
-                            $("#dataset-select-panel .footer h4").html(answer);
-                            $("#delete-dataset-btn").removeAttr("disabled");
+                            $("#dataset-select-panel .footer h5 span").html(answer);
+//                            $("#delete-dataset-btn").removeAttr("disabled");
                             $("#upload-dataset-btn").removeAttr("disabled");
                         } else {
                             $("#login-info").show();
